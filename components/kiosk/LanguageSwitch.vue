@@ -1,23 +1,23 @@
 <template>
-  <div class="flex items-center gap-2 bg-neutral-800 rounded-2xl p-2">
+  <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
     <button
       @click="handleLanguageChange('de')"
-      class="px-5 py-3 rounded-xl text-lg font-semibold transition-all duration-200"
+      class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
       :class="[
         language === 'de'
-          ? 'bg-white text-neutral-900'
-          : 'text-neutral-400 hover:text-white hover:bg-neutral-700'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-700'
       ]"
     >
       🇩🇪 DE
     </button>
     <button
       @click="handleLanguageChange('en')"
-      class="px-5 py-3 rounded-xl text-lg font-semibold transition-all duration-200"
+      class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
       :class="[
         language === 'en'
-          ? 'bg-white text-neutral-900'
-          : 'text-neutral-400 hover:text-white hover:bg-neutral-700'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-700'
       ]"
     >
       🇬🇧 EN

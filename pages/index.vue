@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-screen bg-neutral-950 overflow-hidden flex flex-col fixed inset-0 z-50">
+  <div class="h-screen w-screen bg-gray-50 overflow-hidden flex flex-col fixed inset-0 z-50">
     <!-- Category Navigation Header -->
     <KioskCategoryNav
       :categories="categories"
@@ -12,23 +12,25 @@
     <!-- Scrollable Product Sections -->
     <div 
       ref="scrollContainer"
-      class="flex-1 overflow-y-auto"
+      class="flex-1 overflow-y-auto bg-gray-50"
       @scroll="handleScroll"
     >
       <!-- Loading State -->
       <div v-if="loading" class="relative min-h-[400px]">
-        <div class="absolute left-0 top-0 bottom-0 w-12 bg-neutral-800 animate-pulse" />
-        <div class="pl-20 pr-6 py-8">
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-            <div
-              v-for="i in 10"
-              :key="i"
-              class="bg-neutral-900 rounded-3xl overflow-hidden animate-pulse"
-            >
-              <div class="aspect-square bg-neutral-800" />
-              <div class="p-5 space-y-3">
-                <div class="h-5 bg-neutral-800 rounded w-3/4" />
-                <div class="h-7 bg-neutral-800 rounded w-1/2" />
+        <div class="flex">
+          <div class="w-14 flex-shrink-0 bg-gray-200 animate-pulse" />
+          <div class="flex-1 py-8 px-6">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              <div
+                v-for="i in 10"
+                :key="i"
+                class="bg-white rounded-2xl overflow-hidden animate-pulse shadow-sm"
+              >
+                <div class="aspect-square bg-gray-100" />
+                <div class="p-5 space-y-3">
+                  <div class="h-5 bg-gray-100 rounded w-3/4" />
+                  <div class="h-7 bg-gray-100 rounded w-1/2" />
+                </div>
               </div>
             </div>
           </div>
@@ -53,13 +55,13 @@
           v-if="productSections.length === 0" 
           class="h-full flex flex-col items-center justify-center text-center px-6"
         >
-          <div class="w-24 h-24 rounded-full bg-neutral-800 flex items-center justify-center mb-6">
-            <svg class="w-12 h-12 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+            <svg class="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
-          <h3 class="text-xl font-medium text-white mb-2">{{ t.noProducts }}</h3>
-          <p class="text-neutral-500 max-w-sm">
+          <h3 class="text-xl font-medium text-gray-900 mb-2">{{ t.noProducts }}</h3>
+          <p class="text-gray-500 max-w-sm">
             {{ t.noProductsDescription }}
           </p>
         </div>
@@ -93,7 +95,7 @@
           <div 
             v-if="showToast"
             class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 max-w-md"
-            :class="toastType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
+            :class="toastType === 'success' ? 'bg-gray-900 text-white' : 'bg-red-500 text-white'"
           >
             <svg v-if="toastType === 'success'" class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -120,16 +122,16 @@ const router = useRouter()
 const { t, initContext, getContextKey, language } = useLanguage()
 const { addToCart, initCart, error: cartError } = useShopwareCart()
 
-// Category colors - must match CategoryNav
+// Category colors - subtle, muted tones for Apple style
 const categoryColors = [
-  'linear-gradient(135deg, #f59e0b, #ea580c)',
-  'linear-gradient(135deg, #10b981, #0891b2)',
-  'linear-gradient(135deg, #8b5cf6, #d946ef)',
-  'linear-gradient(135deg, #f43f5e, #ec4899)',
-  'linear-gradient(135deg, #0ea5e9, #6366f1)',
-  'linear-gradient(135deg, #84cc16, #22c55e)',
-  'linear-gradient(135deg, #f97316, #ef4444)',
-  'linear-gradient(135deg, #06b6d4, #3b82f6)',
+  '#6B7280', // gray
+  '#374151', // dark gray
+  '#4B5563', // medium gray
+  '#1F2937', // charcoal
+  '#6B7280', // gray
+  '#374151', // dark gray
+  '#4B5563', // medium gray
+  '#1F2937', // charcoal
 ]
 
 // Refs

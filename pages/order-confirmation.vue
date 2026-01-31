@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-neutral-950">
+  <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-neutral-900 border-b border-neutral-800">
+    <header class="bg-white border-b border-gray-200">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <NuxtLink to="/" class="text-2xl font-bold text-white">
+        <NuxtLink to="/" class="text-2xl font-semibold text-gray-900">
           Kiosk Shop
         </NuxtLink>
         <div class="flex items-center gap-4">
-          <LanguageSwitch />
+          <KioskLanguageSwitch />
           <AccountDropdown />
         </div>
       </div>
@@ -16,16 +16,16 @@
     <div class="max-w-3xl mx-auto px-6 py-12">
       <!-- No Order Data -->
       <div v-if="!orderData" class="text-center py-12">
-        <div class="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center mx-auto mb-6">
-          <svg class="w-10 h-10 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h2 class="text-xl font-semibold text-white mb-2">{{ t.noOrderData }}</h2>
-        <p class="text-neutral-400 mb-6">{{ t.noOrderDataDescription }}</p>
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ t.noOrderData }}</h2>
+        <p class="text-gray-500 mb-6">{{ t.noOrderDataDescription }}</p>
         <NuxtLink 
           to="/" 
-          class="inline-flex items-center gap-2 px-6 py-3 bg-white text-neutral-900 rounded-xl font-semibold hover:bg-neutral-100 transition-colors"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors"
         >
           {{ t.backToShop }}
         </NuxtLink>
@@ -36,55 +36,55 @@
         <!-- Success Header -->
         <div class="text-center">
           <!-- Success Icon -->
-          <div class="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-            <svg class="w-12 h-12 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+            <svg class="w-12 h-12 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           
-          <h1 class="text-3xl font-bold text-white mb-3">{{ t.orderConfirmed }}</h1>
-          <p class="text-lg text-neutral-400">{{ t.thankYou }}</p>
+          <h1 class="text-3xl font-semibold text-gray-900 mb-3">{{ t.orderConfirmed }}</h1>
+          <p class="text-lg text-gray-500">{{ t.thankYou }}</p>
         </div>
         
         <!-- Order Number -->
-        <div class="bg-neutral-900 rounded-2xl p-6 text-center">
-          <p class="text-neutral-400 mb-2">{{ t.orderNumber }}</p>
-          <p class="text-3xl font-bold text-white font-mono">{{ orderData.orderNumber }}</p>
-          <p class="text-neutral-500 mt-3 text-sm">
+        <div class="bg-white rounded-2xl p-6 text-center shadow-sm">
+          <p class="text-gray-500 mb-2">{{ t.orderNumber }}</p>
+          <p class="text-3xl font-bold text-gray-900 font-mono">{{ orderData.orderNumber }}</p>
+          <p class="text-gray-500 mt-3 text-sm">
             {{ t.orderedOn }} {{ formatDate(orderData.orderDateTime) }}
           </p>
         </div>
         
         <!-- Pickup Info -->
-        <div class="bg-green-500/10 border border-green-500/20 rounded-2xl p-6">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-6">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-              <svg class="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
             <div>
-              <h3 class="text-lg font-semibold text-green-400">{{ t.pickupReady }}</h3>
-              <p class="text-green-400/80 mt-1">{{ t.pickupReadyDescription }}</p>
+              <h3 class="text-lg font-medium text-green-800">{{ t.pickupReady }}</h3>
+              <p class="text-green-700 mt-1">{{ t.pickupReadyDescription }}</p>
             </div>
           </div>
         </div>
         
         <!-- Order Items -->
-        <div class="bg-neutral-900 rounded-2xl overflow-hidden">
-          <div class="px-6 py-5 border-b border-neutral-800">
-            <h2 class="text-lg font-semibold text-white">{{ t.orderItems }}</h2>
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+          <div class="px-6 py-5 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900">{{ t.orderItems }}</h2>
           </div>
           
-          <div class="divide-y divide-neutral-800">
+          <div class="divide-y divide-gray-100">
             <div 
               v-for="item in orderData.items" 
               :key="item.id"
               class="px-6 py-4 flex items-center gap-4"
             >
               <!-- Product Image -->
-              <div class="w-16 h-16 rounded-xl bg-neutral-800 overflow-hidden flex-shrink-0">
+              <div class="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
                 <img 
                   v-if="item.cover" 
                   :src="item.cover" 
@@ -92,7 +92,7 @@
                   class="w-full h-full object-cover"
                 />
                 <div v-else class="w-full h-full flex items-center justify-center">
-                  <svg class="w-6 h-6 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
@@ -100,32 +100,32 @@
               
               <!-- Product Info -->
               <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-white truncate">{{ item.label }}</h3>
-                <p class="text-sm text-neutral-400 mt-1">{{ t.quantity }}: {{ item.quantity }}</p>
+                <h3 class="font-medium text-gray-900 truncate">{{ item.label }}</h3>
+                <p class="text-sm text-gray-500 mt-1">{{ t.quantity }}: {{ item.quantity }}</p>
               </div>
               
               <!-- Price -->
               <div class="text-right">
-                <p class="font-semibold text-white">{{ formatPrice(item.price) }}</p>
+                <p class="font-semibold text-gray-900">{{ formatPrice(item.price) }}</p>
               </div>
             </div>
           </div>
           
           <!-- Total -->
-          <div class="px-6 py-5 bg-neutral-800/50 border-t border-neutral-800">
+          <div class="px-6 py-5 bg-gray-50 border-t border-gray-100">
             <div class="flex justify-between items-center">
-              <span class="text-lg font-semibold text-white">{{ t.total }}</span>
-              <span class="text-2xl font-bold text-white">{{ formatPrice(orderData.amountTotal) }}</span>
+              <span class="text-lg font-semibold text-gray-900">{{ t.total }}</span>
+              <span class="text-2xl font-bold text-gray-900">{{ formatPrice(orderData.amountTotal) }}</span>
             </div>
           </div>
         </div>
         
         <!-- Customer Info -->
-        <div class="bg-neutral-900 rounded-2xl p-6">
-          <h2 class="text-lg font-semibold text-white mb-4">{{ t.customer }}</h2>
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.customer }}</h2>
           <div class="space-y-2">
-            <p class="text-white">{{ orderData.customerName }}</p>
-            <p class="text-neutral-400">{{ orderData.customerEmail }}</p>
+            <p class="text-gray-900">{{ orderData.customerName }}</p>
+            <p class="text-gray-500">{{ orderData.customerEmail }}</p>
           </div>
         </div>
         
@@ -133,13 +133,13 @@
         <div class="flex flex-col sm:flex-row gap-4">
           <NuxtLink 
             to="/account/orders"
-            class="flex-1 py-4 px-6 bg-neutral-800 text-white rounded-xl font-semibold text-lg text-center hover:bg-neutral-700 transition-colors"
+            class="flex-1 py-4 px-6 bg-gray-100 text-gray-900 rounded-xl font-medium text-lg text-center hover:bg-gray-200 transition-colors"
           >
             {{ t.viewOrders }}
           </NuxtLink>
           <NuxtLink 
             to="/"
-            class="flex-1 py-4 px-6 bg-white text-neutral-900 rounded-xl font-semibold text-lg text-center hover:bg-neutral-100 transition-colors"
+            class="flex-1 py-4 px-6 bg-gray-900 text-white rounded-xl font-medium text-lg text-center hover:bg-gray-800 transition-colors"
           >
             {{ t.continueShopping }}
           </NuxtLink>

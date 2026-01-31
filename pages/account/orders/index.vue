@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-neutral-950">
+  <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-neutral-900 border-b border-neutral-800">
+    <header class="bg-white border-b border-gray-100 shadow-sm">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <NuxtLink to="/" class="text-xl font-bold text-white">
+        <NuxtLink to="/" class="text-xl font-semibold text-gray-900 hover:text-gray-600 transition-colors">
           Kiosk Shop
         </NuxtLink>
         <AccountDropdown />
@@ -14,24 +14,24 @@
       <div class="grid lg:grid-cols-4 gap-8">
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1">
-          <div class="bg-neutral-900 rounded-2xl p-4">
+          <div class="bg-white rounded-2xl shadow-sm p-4">
             <AccountNav />
           </div>
         </aside>
         
         <!-- Main Content -->
         <main class="lg:col-span-3">
-          <div class="bg-neutral-900 rounded-2xl p-6">
+          <div class="bg-white rounded-2xl shadow-sm p-6">
             <!-- Header -->
             <div class="flex items-center justify-between mb-6">
-              <h1 class="text-2xl font-bold text-white">{{ t.title }}</h1>
-              <p class="text-neutral-400">{{ total }} {{ t.ordersCount }}</p>
+              <h1 class="text-2xl font-semibold text-gray-900">{{ t.title }}</h1>
+              <p class="text-gray-500">{{ total }} {{ t.ordersCount }}</p>
             </div>
             
             <!-- Loading State -->
             <div v-if="loading" class="space-y-4">
               <div v-for="i in 5" :key="i" class="animate-pulse">
-                <div class="h-24 bg-neutral-800 rounded-xl" />
+                <div class="h-24 bg-gray-100 rounded-xl" />
               </div>
             </div>
             
@@ -41,15 +41,15 @@
                 v-for="order in orders"
                 :key="order.id"
                 :to="`/account/orders/${order.id}`"
-                class="block p-5 bg-neutral-800 rounded-xl hover:bg-neutral-700 transition-colors"
+                class="block p-5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100"
               >
                 <div class="flex flex-wrap items-start justify-between gap-4">
                   <!-- Order Info -->
                   <div class="space-y-1">
-                    <p class="font-semibold text-white text-lg">
+                    <p class="font-semibold text-gray-900 text-lg">
                       {{ t.orderNumber }} {{ order.orderNumber }}
                     </p>
-                    <p class="text-sm text-neutral-400">
+                    <p class="text-sm text-gray-500">
                       {{ formatDate(order.orderDateTime) }}
                     </p>
                     <div class="flex items-center gap-2 mt-2">
@@ -59,7 +59,7 @@
                       >
                         {{ order.stateMachineState?.name || t.statusUnknown }}
                       </span>
-                      <span class="text-neutral-500 text-sm">
+                      <span class="text-gray-400 text-sm">
                         {{ getItemCount(order) }} {{ t.items }}
                       </span>
                     </div>
@@ -68,11 +68,11 @@
                   <!-- Price & Arrow -->
                   <div class="flex items-center gap-4">
                     <div class="text-right">
-                      <p class="text-xl font-bold text-white">
+                      <p class="text-xl font-semibold text-gray-900">
                         {{ formatPrice(order.amountTotal, order.currency) }}
                       </p>
                     </div>
-                    <svg class="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
@@ -83,7 +83,7 @@
                   <div 
                     v-for="(item, index) in order.lineItems.slice(0, 4)" 
                     :key="item.id"
-                    class="w-12 h-12 rounded-lg bg-neutral-700 overflow-hidden flex-shrink-0"
+                    class="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0"
                   >
                     <img 
                       v-if="item.cover?.url" 
@@ -92,12 +92,12 @@
                       class="w-full h-full object-cover"
                     />
                     <div v-else class="w-full h-full flex items-center justify-center">
-                      <svg class="w-6 h-6 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
                   </div>
-                  <span v-if="order.lineItems.length > 4" class="text-sm text-neutral-500">
+                  <span v-if="order.lineItems.length > 4" class="text-sm text-gray-500">
                     +{{ order.lineItems.length - 4 }} {{ t.more }}
                   </span>
                 </div>
@@ -108,7 +108,7 @@
                 <button
                   @click="loadPage(currentPage - 1)"
                   :disabled="currentPage === 1"
-                  class="p-2 rounded-lg bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="p-2 rounded-lg bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -122,8 +122,8 @@
                     @click="loadPage(page)"
                     class="w-10 h-10 rounded-lg font-medium transition-colors"
                     :class="page === currentPage 
-                      ? 'bg-white text-neutral-900' 
-                      : 'bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700'"
+                      ? 'bg-gray-900 text-white' 
+                      : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'"
                   >
                     {{ page }}
                   </button>
@@ -132,7 +132,7 @@
                 <button
                   @click="loadPage(currentPage + 1)"
                   :disabled="currentPage === totalPages"
-                  class="p-2 rounded-lg bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="p-2 rounded-lg bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -143,16 +143,16 @@
             
             <!-- Empty State -->
             <div v-else class="text-center py-12">
-              <div class="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
-              <h3 class="text-xl font-semibold text-white mb-2">{{ t.noOrders }}</h3>
-              <p class="text-neutral-400 mb-6">{{ t.noOrdersDescription }}</p>
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ t.noOrders }}</h3>
+              <p class="text-gray-500 mb-6">{{ t.noOrdersDescription }}</p>
               <NuxtLink 
                 to="/" 
-                class="inline-flex items-center gap-2 px-6 py-3 bg-white text-neutral-900 rounded-xl font-semibold hover:bg-neutral-100 transition-colors"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
               >
                 {{ t.startShopping }}
               </NuxtLink>
@@ -285,15 +285,15 @@ function getStatusClasses(status?: string): string {
   switch (status) {
     case 'completed':
     case 'paid':
-      return 'bg-green-500/20 text-green-400'
+      return 'bg-emerald-50 text-emerald-700 border border-emerald-200'
     case 'cancelled':
     case 'refunded':
-      return 'bg-red-500/20 text-red-400'
+      return 'bg-red-50 text-red-700 border border-red-200'
     case 'in_progress':
     case 'open':
-      return 'bg-yellow-500/20 text-yellow-400'
+      return 'bg-amber-50 text-amber-700 border border-amber-200'
     default:
-      return 'bg-neutral-700 text-neutral-400'
+      return 'bg-gray-100 text-gray-600'
   }
 }
 </script>

@@ -3,14 +3,14 @@
     <!-- Error Message -->
     <div 
       v-if="error" 
-      class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm"
+      class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"
     >
       {{ error }}
     </div>
     
     <!-- Loading State for Form Data -->
     <div v-if="isLoadingFormData" class="flex items-center justify-center py-8">
-      <div class="flex items-center gap-3 text-neutral-400">
+      <div class="flex items-center gap-3 text-gray-500">
         <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -22,18 +22,18 @@
     <template v-else>
       <!-- Personal Information Section -->
       <div class="space-y-4">
-        <h3 class="text-lg font-medium text-white">{{ t.personalInfo }}</h3>
+        <h3 class="text-lg font-medium text-gray-900">{{ t.personalInfo }}</h3>
         
         <!-- Salutation -->
         <div>
-          <label for="salutation" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="salutation" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.salutation }} *
           </label>
           <select
             id="salutation"
             v-model="form.salutationId"
             required
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
             :disabled="loading"
           >
             <option value="" disabled>{{ t.selectSalutation }}</option>
@@ -50,7 +50,7 @@
         <!-- Name Row -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="firstName" class="block text-sm font-medium text-neutral-300 mb-2">
+            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
               {{ t.firstName }} *
             </label>
             <input
@@ -60,13 +60,13 @@
               required
               autocomplete="given-name"
               :placeholder="t.firstNamePlaceholder"
-              class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
               :disabled="loading"
             />
           </div>
           
           <div>
-            <label for="lastName" class="block text-sm font-medium text-neutral-300 mb-2">
+            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
               {{ t.lastName }} *
             </label>
             <input
@@ -76,7 +76,7 @@
               required
               autocomplete="family-name"
               :placeholder="t.lastNamePlaceholder"
-              class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
               :disabled="loading"
             />
           </div>
@@ -84,7 +84,7 @@
         
         <!-- Company (Optional) -->
         <div>
-          <label for="company" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.company }}
           </label>
           <input
@@ -93,7 +93,7 @@
             type="text"
             autocomplete="organization"
             :placeholder="t.companyPlaceholder"
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
             :disabled="loading"
           />
         </div>
@@ -101,11 +101,11 @@
       
       <!-- Account Section -->
       <div class="space-y-4">
-        <h3 class="text-lg font-medium text-white">{{ t.accountInfo }}</h3>
+        <h3 class="text-lg font-medium text-gray-900">{{ t.accountInfo }}</h3>
         
         <!-- Email -->
         <div>
-          <label for="email" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.email }} *
           </label>
           <input
@@ -115,18 +115,18 @@
             required
             autocomplete="email"
             :placeholder="t.emailPlaceholder"
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
-            :class="{ 'border-red-500': validationErrors.email }"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
+            :class="{ 'border-red-300': validationErrors.email }"
             :disabled="loading"
           />
-          <p v-if="validationErrors.email" class="mt-1 text-sm text-red-400">
+          <p v-if="validationErrors.email" class="mt-1 text-sm text-red-600">
             {{ validationErrors.email }}
           </p>
         </div>
         
         <!-- Password -->
         <div>
-          <label for="password" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.password }} *
           </label>
           <div class="relative">
@@ -137,14 +137,14 @@
               required
               autocomplete="new-password"
               :placeholder="t.passwordPlaceholder"
-              class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all pr-12"
-              :class="{ 'border-red-500': validationErrors.password }"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all pr-12"
+              :class="{ 'border-red-300': validationErrors.password }"
               :disabled="loading"
             />
             <button
               type="button"
               @click="showPassword = !showPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
             >
               <svg v-if="showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
@@ -155,15 +155,15 @@
               </svg>
             </button>
           </div>
-          <p v-if="validationErrors.password" class="mt-1 text-sm text-red-400">
+          <p v-if="validationErrors.password" class="mt-1 text-sm text-red-600">
             {{ validationErrors.password }}
           </p>
-          <p class="mt-1 text-xs text-neutral-500">{{ t.passwordHint }}</p>
+          <p class="mt-1 text-xs text-gray-500">{{ t.passwordHint }}</p>
         </div>
         
         <!-- Password Confirm -->
         <div>
-          <label for="passwordConfirm" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="passwordConfirm" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.passwordConfirm }} *
           </label>
           <input
@@ -173,11 +173,11 @@
             required
             autocomplete="new-password"
             :placeholder="t.passwordConfirmPlaceholder"
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
-            :class="{ 'border-red-500': validationErrors.passwordConfirm }"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
+            :class="{ 'border-red-300': validationErrors.passwordConfirm }"
             :disabled="loading"
           />
-          <p v-if="validationErrors.passwordConfirm" class="mt-1 text-sm text-red-400">
+          <p v-if="validationErrors.passwordConfirm" class="mt-1 text-sm text-red-600">
             {{ validationErrors.passwordConfirm }}
           </p>
         </div>
@@ -185,11 +185,11 @@
       
       <!-- Address Section -->
       <div class="space-y-4">
-        <h3 class="text-lg font-medium text-white">{{ t.addressInfo }}</h3>
+        <h3 class="text-lg font-medium text-gray-900">{{ t.addressInfo }}</h3>
         
         <!-- Street -->
         <div>
-          <label for="street" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="street" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.street }} *
           </label>
           <input
@@ -199,7 +199,7 @@
             required
             autocomplete="street-address"
             :placeholder="t.streetPlaceholder"
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
             :disabled="loading"
           />
         </div>
@@ -207,7 +207,7 @@
         <!-- ZIP & City Row -->
         <div class="grid grid-cols-3 gap-4">
           <div>
-            <label for="zipcode" class="block text-sm font-medium text-neutral-300 mb-2">
+            <label for="zipcode" class="block text-sm font-medium text-gray-700 mb-2">
               {{ t.zipcode }} *
             </label>
             <input
@@ -217,13 +217,13 @@
               required
               autocomplete="postal-code"
               :placeholder="t.zipcodePlaceholder"
-              class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
               :disabled="loading"
             />
           </div>
           
           <div class="col-span-2">
-            <label for="city" class="block text-sm font-medium text-neutral-300 mb-2">
+            <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
               {{ t.city }} *
             </label>
             <input
@@ -233,7 +233,7 @@
               required
               autocomplete="address-level2"
               :placeholder="t.cityPlaceholder"
-              class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
               :disabled="loading"
             />
           </div>
@@ -241,14 +241,14 @@
         
         <!-- Country -->
         <div>
-          <label for="country" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="country" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.country }} *
           </label>
           <select
             id="country"
             v-model="form.countryId"
             required
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
             :disabled="loading"
           >
             <option value="" disabled>{{ t.selectCountry }}</option>
@@ -264,14 +264,14 @@
         
         <!-- Country State (if available) -->
         <div v-if="selectedCountryStates.length > 0">
-          <label for="countryState" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="countryState" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.state }} *
           </label>
           <select
             id="countryState"
             v-model="form.countryStateId"
             required
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
             :disabled="loading"
           >
             <option value="" disabled>{{ t.selectState }}</option>
@@ -287,7 +287,7 @@
         
         <!-- Phone (Optional) -->
         <div>
-          <label for="phone" class="block text-sm font-medium text-neutral-300 mb-2">
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
             {{ t.phone }}
           </label>
           <input
@@ -296,7 +296,7 @@
             type="tel"
             autocomplete="tel"
             :placeholder="t.phonePlaceholder"
-            class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
             :disabled="loading"
           />
         </div>
@@ -309,17 +309,17 @@
             v-model="form.acceptTerms"
             type="checkbox"
             required
-            class="w-5 h-5 mt-0.5 rounded border-neutral-600 bg-neutral-800 text-white focus:ring-white/20"
+            class="w-5 h-5 mt-0.5 rounded border-gray-300 bg-gray-50 text-gray-900 focus:ring-gray-900/20"
           />
-          <span class="text-sm text-neutral-400">
+          <span class="text-sm text-gray-600">
             {{ t.acceptTerms }}
-            <NuxtLink to="/terms" class="text-white hover:underline">{{ t.terms }}</NuxtLink>
+            <NuxtLink to="/terms" class="text-gray-900 hover:underline">{{ t.terms }}</NuxtLink>
             {{ t.and }}
-            <NuxtLink to="/privacy" class="text-white hover:underline">{{ t.privacy }}</NuxtLink>
+            <NuxtLink to="/privacy" class="text-gray-900 hover:underline">{{ t.privacy }}</NuxtLink>
             {{ t.acceptTermsEnd }} *
           </span>
         </label>
-        <p v-if="validationErrors.acceptTerms" class="text-sm text-red-400">
+        <p v-if="validationErrors.acceptTerms" class="text-sm text-red-600">
           {{ validationErrors.acceptTerms }}
         </p>
       </div>
@@ -328,7 +328,7 @@
       <button
         type="submit"
         :disabled="loading || !isFormValid"
-        class="w-full py-4 px-6 bg-white text-neutral-900 rounded-xl font-semibold text-lg hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+        class="w-full py-4 px-6 bg-gray-900 text-white rounded-xl font-medium text-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
       >
         <svg 
           v-if="loading" 
@@ -343,9 +343,9 @@
       </button>
       
       <!-- Login Link -->
-      <p class="text-center text-neutral-400 text-sm">
+      <p class="text-center text-gray-500 text-sm">
         {{ t.hasAccount }}
-        <NuxtLink to="/account/login" class="text-white hover:underline">
+        <NuxtLink to="/account/login" class="text-gray-900 hover:underline">
           {{ t.loginNow }}
         </NuxtLink>
       </p>
