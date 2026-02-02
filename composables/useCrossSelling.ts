@@ -7,7 +7,7 @@
  * 3. Beliebige andere Produkte als Fallback
  */
 
-import client from '../../.frontstack/generated-client'
+import client from '../.frontstack/generated-client'
 
 interface CrossSellingProduct {
   id: string

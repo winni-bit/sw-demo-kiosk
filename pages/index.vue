@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import client from '../../.frontstack/generated-client'
+import client from '../.frontstack/generated-client'
 
 definePageMeta({
   layout: false

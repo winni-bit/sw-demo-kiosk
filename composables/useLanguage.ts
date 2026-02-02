@@ -1,5 +1,5 @@
 // Language composable for the kiosk app with Frontstack context support
-import client from '../../.frontstack/generated-client'
+import client from '../.frontstack/generated-client'
 
 export type Language = 'de' | 'en'
 
