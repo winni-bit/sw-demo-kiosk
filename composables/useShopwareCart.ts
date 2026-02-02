@@ -554,6 +554,50 @@ export function useShopwareCart() {
   // ============================================
   
   /**
+   * Prepare checkout by setting up shipping and payment methods
+   * This should be called before placing an order
+   */
+  async function prepareCheckout(): Promise<{ success: boolean; error?: string }> {
+    console.log('[Cart] Preparing checkout...')
+    
+    try {
+      // Fetch available methods
+      const [shipping, payment] = await Promise.all([
+        fetchShippingMethods(),
+        fetchPaymentMethods(),
+      ])
+      
+      console.log('[Cart] Available shipping methods:', shipping.length)
+      console.log('[Cart] Available payment methods:', payment.length)
+      
+      // Check if we have methods available
+      if (shipping.length === 0) {
+        return { success: false, error: 'Keine Versandmethoden verfügbar' }
+      }
+      
+      if (payment.length === 0) {
+        return { success: false, error: 'Keine Zahlungsmethoden verfügbar' }
+      }
+      
+      // Set default shipping method if not set
+      if (!selectedShippingMethodId.value) {
+        await setShippingMethod(shipping[0].id)
+      }
+      
+      // Set default payment method if not set
+      if (!selectedPaymentMethodId.value) {
+        await setPaymentMethod(payment[0].id)
+      }
+      
+      console.log('[Cart] Checkout prepared successfully')
+      return { success: true }
+    } catch (err: any) {
+      console.error('[Cart] Failed to prepare checkout:', err)
+      return { success: false, error: extractErrorMessage(err) || 'Fehler bei der Checkout-Vorbereitung' }
+    }
+  }
+  
+  /**
    * Place an order
    */
   async function placeOrder(): Promise<ShopwareOrder | null> {
@@ -562,6 +606,15 @@ export function useShopwareCart() {
     
     try {
       console.log('[Cart] Placing order')
+      console.log('[Cart] Selected shipping method:', selectedShippingMethodId.value)
+      console.log('[Cart] Selected payment method:', selectedPaymentMethodId.value)
+      
+      // First, ensure checkout is prepared (shipping/payment methods set)
+      const prepResult = await prepareCheckout()
+      if (!prepResult.success) {
+        error.value = prepResult.error || 'Checkout-Vorbereitung fehlgeschlagen'
+        return null
+      }
       
       const { data: response } = await shopwareRequest<ShopwareOrder>('checkout/order', {
         method: 'POST',
@@ -579,7 +632,43 @@ export function useShopwareCart() {
       return response
     } catch (err: any) {
       console.error('[Cart] Failed to place order:', err)
-      error.value = extractErrorMessage(err) || 'Fehler beim Aufgeben der Bestellung'
+      
+      // Extract detailed error message
+      let errorMessage = extractErrorMessage(err)
+      
+      // Check for common Shopware checkout errors
+      if (err?.data?.errors) {
+        const errors = err.data.errors
+        if (Array.isArray(errors)) {
+          const errorDetails = errors.map((e: any) => {
+            if (e.code === 'CHECKOUT__CUSTOMER_NOT_LOGGED_IN') {
+              return 'Bitte melden Sie sich an, um die Bestellung abzuschließen.'
+            }
+            if (e.code === 'CHECKOUT__CART_EMPTY') {
+              return 'Der Warenkorb ist leer.'
+            }
+            if (e.code === 'CHECKOUT__CART_INVALID') {
+              return 'Der Warenkorb enthält ungültige Artikel.'
+            }
+            if (e.code?.includes('SHIPPING')) {
+              return 'Bitte wählen Sie eine gültige Versandmethode.'
+            }
+            if (e.code?.includes('PAYMENT')) {
+              return 'Bitte wählen Sie eine gültige Zahlungsmethode.'
+            }
+            if (e.code?.includes('ADDRESS')) {
+              return 'Bitte überprüfen Sie Ihre Adressdaten.'
+            }
+            return e.detail || e.title || e.message
+          }).filter(Boolean)
+          
+          if (errorDetails.length > 0) {
+            errorMessage = errorDetails.join(' ')
+          }
+        }
+      }
+      
+      error.value = errorMessage || 'Fehler beim Aufgeben der Bestellung'
       return null
     } finally {
       loading.value = false
@@ -679,6 +768,7 @@ export function useShopwareCart() {
     setPaymentMethod,
     
     // Checkout
+    prepareCheckout,
     placeOrder,
     
     // Helpers

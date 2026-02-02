@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-white">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-100 shadow-sm">
+    <header class="border-b border-black">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <NuxtLink to="/" class="text-xl font-semibold text-gray-900 hover:text-gray-600 transition-colors">
-          Kiosk Shop
+        <NuxtLink to="/" class="font-display text-2xl font-bold text-black uppercase">
+          KIOSK<span class="text-accent">.</span>
         </NuxtLink>
         <AccountDropdown />
       </div>
@@ -14,52 +14,50 @@
       <div class="grid lg:grid-cols-4 gap-8">
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1">
-          <div class="bg-white rounded-2xl shadow-sm p-4">
+          <div class="border border-black p-4">
             <AccountNav />
           </div>
         </aside>
         
         <!-- Main Content -->
         <main class="lg:col-span-3">
-          <div class="bg-white rounded-2xl shadow-sm p-6">
+          <div class="border border-black">
             <!-- Header -->
-            <div class="flex items-center justify-between mb-6">
-              <h1 class="text-2xl font-semibold text-gray-900">{{ t.title }}</h1>
-              <p class="text-gray-500">{{ total }} {{ t.ordersCount }}</p>
+            <div class="flex items-center justify-between px-6 py-4 border-b border-black">
+              <h1 class="font-display text-2xl font-bold text-black uppercase">{{ t.title }}</h1>
+              <p class="font-mono text-xs text-black/50">{{ total }} {{ t.ordersCount }}</p>
             </div>
             
             <!-- Loading State -->
-            <div v-if="loading" class="space-y-4">
-              <div v-for="i in 5" :key="i" class="animate-pulse">
-                <div class="h-24 bg-gray-100 rounded-xl" />
-              </div>
+            <div v-if="loading" class="p-6 space-y-4">
+              <div v-for="i in 5" :key="i" class="h-24 bg-gray-100 animate-pulse" />
             </div>
             
             <!-- Orders List -->
-            <div v-else-if="orders.length > 0" class="space-y-4">
+            <div v-else-if="orders.length > 0" class="divide-y divide-black/10">
               <NuxtLink
                 v-for="order in orders"
                 :key="order.id"
                 :to="`/account/orders/${order.id}`"
-                class="block p-5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100"
+                class="block p-6 hover:bg-gray-50 transition-colors"
               >
                 <div class="flex flex-wrap items-start justify-between gap-4">
                   <!-- Order Info -->
                   <div class="space-y-1">
-                    <p class="font-semibold text-gray-900 text-lg">
+                    <p class="font-sans font-semibold text-black text-lg">
                       {{ t.orderNumber }} {{ order.orderNumber }}
                     </p>
-                    <p class="text-sm text-gray-500">
+                    <p class="font-mono text-xs text-black/50">
                       {{ formatDate(order.orderDateTime) }}
                     </p>
-                    <div class="flex items-center gap-2 mt-2">
+                    <div class="flex items-center gap-3 mt-2">
                       <span 
-                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                        class="inline-flex items-center px-3 py-1 text-xs font-mono uppercase tracking-wider"
                         :class="getStatusClasses(order.stateMachineState?.technicalName)"
                       >
                         {{ order.stateMachineState?.name || t.statusUnknown }}
                       </span>
-                      <span class="text-gray-400 text-sm">
+                      <span class="font-mono text-xs text-black/40">
                         {{ getItemCount(order) }} {{ t.items }}
                       </span>
                     </div>
@@ -67,14 +65,10 @@
                   
                   <!-- Price & Arrow -->
                   <div class="flex items-center gap-4">
-                    <div class="text-right">
-                      <p class="text-xl font-semibold text-gray-900">
-                        {{ formatPrice(order.amountTotal, order.currency) }}
-                      </p>
-                    </div>
-                    <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                    <p class="font-mono text-xl font-bold text-accent">
+                      {{ formatPrice(order.amountTotal, order.currency) }}
+                    </p>
+                    <span class="font-mono text-black/30">→</span>
                   </div>
                 </div>
                 
@@ -83,7 +77,7 @@
                   <div 
                     v-for="(item, index) in order.lineItems.slice(0, 4)" 
                     :key="item.id"
-                    class="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0"
+                    class="w-12 h-12 bg-gray-100 overflow-hidden flex-shrink-0"
                   >
                     <img 
                       v-if="item.cover?.url" 
@@ -92,27 +86,23 @@
                       class="w-full h-full object-cover"
                     />
                     <div v-else class="w-full h-full flex items-center justify-center">
-                      <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
+                      <span class="font-display text-lg text-gray-300">?</span>
                     </div>
                   </div>
-                  <span v-if="order.lineItems.length > 4" class="text-sm text-gray-500">
+                  <span v-if="order.lineItems.length > 4" class="font-mono text-xs text-black/40">
                     +{{ order.lineItems.length - 4 }} {{ t.more }}
                   </span>
                 </div>
               </NuxtLink>
               
               <!-- Pagination -->
-              <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">
+              <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 p-6 border-t border-black">
                 <button
                   @click="loadPage(currentPage - 1)"
                   :disabled="currentPage === 1"
-                  class="p-2 rounded-lg bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="w-10 h-10 border border-black flex items-center justify-center hover:bg-black hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <span class="font-mono">←</span>
                 </button>
                 
                 <div class="flex items-center gap-1">
@@ -120,10 +110,10 @@
                     v-for="page in visiblePages"
                     :key="page"
                     @click="loadPage(page)"
-                    class="w-10 h-10 rounded-lg font-medium transition-colors"
+                    class="w-10 h-10 font-mono font-bold transition-colors"
                     :class="page === currentPage 
-                      ? 'bg-gray-900 text-white' 
-                      : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'"
+                      ? 'bg-black text-white' 
+                      : 'border border-black text-black hover:bg-black hover:text-white'"
                   >
                     {{ page }}
                   </button>
@@ -132,27 +122,23 @@
                 <button
                   @click="loadPage(currentPage + 1)"
                   :disabled="currentPage === totalPages"
-                  class="p-2 rounded-lg bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="w-10 h-10 border border-black flex items-center justify-center hover:bg-black hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
+                  <span class="font-mono">→</span>
                 </button>
               </div>
             </div>
             
             <!-- Empty State -->
-            <div v-else class="text-center py-12">
-              <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
+            <div v-else class="text-center py-16 px-6">
+              <div class="w-20 h-20 border-2 border-black/20 flex items-center justify-center mx-auto mb-6">
+                <span class="font-display text-3xl text-black/20">∅</span>
               </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ t.noOrders }}</h3>
-              <p class="text-gray-500 mb-6">{{ t.noOrdersDescription }}</p>
+              <h3 class="font-display text-2xl font-bold text-black uppercase mb-4">{{ t.noOrders }}</h3>
+              <p class="font-sans text-black/50 mb-8">{{ t.noOrdersDescription }}</p>
               <NuxtLink 
                 to="/" 
-                class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+                class="inline-block px-8 py-4 bg-black text-white font-sans font-semibold uppercase tracking-widest hover:bg-accent transition-colors"
               >
                 {{ t.startShopping }}
               </NuxtLink>
@@ -175,14 +161,12 @@ definePageMeta({
 const { fetchOrders } = useShopwareAuth()
 const { language } = useLanguage()
 
-// State
 const orders = ref<ShopwareOrder[]>([])
 const loading = ref(true)
 const currentPage = ref(1)
 const total = ref(0)
 const limit = 10
 
-// Translations
 const translations = {
   de: {
     title: 'Bestellungen',
@@ -192,7 +176,7 @@ const translations = {
     more: 'weitere',
     noOrders: 'Keine Bestellungen',
     noOrdersDescription: 'Sie haben noch keine Bestellungen aufgegeben.',
-    startShopping: 'Jetzt einkaufen',
+    startShopping: 'Jetzt Einkaufen',
     statusUnknown: 'Unbekannt',
   },
   en: {
@@ -210,7 +194,6 @@ const translations = {
 
 const t = computed(() => translations[language.value])
 
-// Computed
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / limit)))
 
 const visiblePages = computed(() => {
@@ -225,13 +208,11 @@ const visiblePages = computed(() => {
   return pages
 })
 
-// Get item count from order
 function getItemCount(order: ShopwareOrder): number {
   if (!order.lineItems) return 0
   return order.lineItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
 }
 
-// Load orders
 async function loadPage(page: number) {
   if (page < 1 || (totalPages.value > 0 && page > totalPages.value)) return
   
@@ -239,11 +220,9 @@ async function loadPage(page: number) {
   currentPage.value = page
   
   try {
-    console.log('[Orders] Loading page:', page)
     const response = await fetchOrders(page, limit)
     orders.value = response.elements || []
     total.value = response.total || 0
-    console.log('[Orders] Loaded:', orders.value.length, 'orders, total:', total.value)
   } catch (err) {
     console.error('[Orders] Failed to load:', err)
   } finally {
@@ -251,12 +230,10 @@ async function loadPage(page: number) {
   }
 }
 
-// Initial load
 onMounted(() => {
   loadPage(1)
 })
 
-// Format date
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
   const locale = language.value === 'de' ? 'de-DE' : 'en-GB'
@@ -269,7 +246,6 @@ function formatDate(dateString: string): string {
   })
 }
 
-// Format price
 function formatPrice(amount: number, currency?: { isoCode?: string; symbol?: string }): string {
   const locale = language.value === 'de' ? 'de-DE' : 'en-GB'
   const currencyCode = currency?.isoCode || 'EUR'
@@ -280,20 +256,19 @@ function formatPrice(amount: number, currency?: { isoCode?: string; symbol?: str
   }).format(amount)
 }
 
-// Get status classes
 function getStatusClasses(status?: string): string {
   switch (status) {
     case 'completed':
     case 'paid':
-      return 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+      return 'bg-green-100 text-green-800 border border-green-300'
     case 'cancelled':
     case 'refunded':
-      return 'bg-red-50 text-red-700 border border-red-200'
+      return 'bg-accent/10 text-accent border border-accent'
     case 'in_progress':
     case 'open':
-      return 'bg-amber-50 text-amber-700 border border-amber-200'
+      return 'bg-yellow-100 text-yellow-800 border border-yellow-300'
     default:
-      return 'bg-gray-100 text-gray-600'
+      return 'bg-gray-100 text-black/60 border border-black/20'
   }
 }
 </script>

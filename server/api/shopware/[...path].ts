@@ -40,9 +40,10 @@ export default defineEventHandler(async (event) => {
     }
   }
   
-  // Get context token from cookie or header
-  const contextTokenCookie = getCookie(event, 'sw-context-token')
+  // Get context token from header first, then cookie
+  // Header takes precedence because the client sends the current token there
   const contextTokenHeader = getHeader(event, 'sw-context-token')
+  const contextTokenCookie = getCookie(event, 'sw-context-token')
   const contextToken = contextTokenHeader || contextTokenCookie
   
   // Get request body for POST/PATCH requests
@@ -71,7 +72,7 @@ export default defineEventHandler(async (event) => {
   console.log(`[Shopware Proxy] ${method} ${targetUrl}`)
   console.log(`[Shopware Proxy] Context Token: ${contextToken ? contextToken.substring(0, 20) + '...' : 'none'}`)
   if (body) {
-    console.log(`[Shopware Proxy] Body:`, JSON.stringify(body))
+    console.log(`[Shopware Proxy] Body:`, JSON.stringify(body).substring(0, 500))
   }
   
   try {
@@ -86,14 +87,16 @@ export default defineEventHandler(async (event) => {
     const newContextToken = response.headers.get('sw-context-token')
     
     console.log(`[Shopware Proxy] Response status: ${response.status}`)
-    console.log(`[Shopware Proxy] New context token: ${newContextToken ? newContextToken.substring(0, 20) + '...' : 'none'}`)
+    console.log(`[Shopware Proxy] Response context token: ${newContextToken ? newContextToken.substring(0, 20) + '...' : 'none (keeping existing)'}`)
     
     // Log response data (truncated for large responses)
     const responseData = response._data
     const responseStr = JSON.stringify(responseData)
     console.log(`[Shopware Proxy] Response data (${responseStr.length} chars):`, responseStr.substring(0, 500))
     
-    if (newContextToken) {
+    // WICHTIG: Nur den Context-Token aktualisieren, wenn Shopware einen neuen sendet
+    // UND wenn es sich nicht um einen "leeren" Token handelt
+    if (newContextToken && newContextToken.length > 10) {
       // Set the context token as a cookie
       setCookie(event, 'sw-context-token', newContextToken, {
         httpOnly: false, // Allow JS access for client-side requests
@@ -105,6 +108,10 @@ export default defineEventHandler(async (event) => {
       
       // Also return it in response header
       setHeader(event, 'sw-context-token', newContextToken)
+    } else if (contextToken) {
+      // Wenn kein neuer Token kommt, den bestehenden im Header zurückgeben
+      // damit der Client weiß, welcher Token aktiv ist
+      setHeader(event, 'sw-context-token', contextToken)
     }
     
     return response._data

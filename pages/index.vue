@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-screen bg-gray-50 overflow-hidden flex flex-col fixed inset-0 z-50">
+  <div class="min-h-screen bg-white overflow-x-hidden">
     <!-- Category Navigation Header -->
     <KioskCategoryNav
       :categories="categories"
@@ -9,31 +9,13 @@
       @language-change="reloadData"
     />
     
-    <!-- Scrollable Product Sections -->
-    <div 
-      ref="scrollContainer"
-      class="flex-1 overflow-y-auto bg-gray-50"
-      @scroll="handleScroll"
-    >
+    <!-- Main Content -->
+    <main ref="scrollContainer" @scroll="handleScroll">
       <!-- Loading State -->
-      <div v-if="loading" class="relative min-h-[400px]">
-        <div class="flex">
-          <div class="w-14 flex-shrink-0 bg-gray-200 animate-pulse" />
-          <div class="flex-1 py-8 px-6">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-              <div
-                v-for="i in 10"
-                :key="i"
-                class="bg-white rounded-2xl overflow-hidden animate-pulse shadow-sm"
-              >
-                <div class="aspect-square bg-gray-100" />
-                <div class="p-5 space-y-3">
-                  <div class="h-5 bg-gray-100 rounded w-3/4" />
-                  <div class="h-7 bg-gray-100 rounded w-1/2" />
-                </div>
-              </div>
-            </div>
-          </div>
+      <div v-if="loading" class="min-h-[60vh] flex items-center justify-center">
+        <div class="text-center">
+          <div class="w-16 h-16 border-2 border-black border-t-accent animate-spin mx-auto mb-6" />
+          <p class="font-mono text-sm text-black/50 uppercase tracking-widest">Loading</p>
         </div>
       </div>
 
@@ -45,6 +27,7 @@
           :category="section.category"
           :products="section.products"
           :color="getCategoryColor(index)"
+          :section-index="index"
           @select="openProductModal"
           @add-to-cart="handleAddToCart"
           @buy-now="handleBuyNow"
@@ -53,20 +36,30 @@
         <!-- Empty State -->
         <div 
           v-if="productSections.length === 0" 
-          class="h-full flex flex-col items-center justify-center text-center px-6"
+          class="min-h-[60vh] flex flex-col items-center justify-center text-center px-8"
         >
-          <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-            <svg class="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
+          <div class="w-32 h-32 border-2 border-black/20 flex items-center justify-center mb-8">
+            <span class="font-display text-6xl text-black/20">∅</span>
           </div>
-          <h3 class="text-xl font-medium text-gray-900 mb-2">{{ t.noProducts }}</h3>
-          <p class="text-gray-500 max-w-sm">
+          <h3 class="font-display text-3xl font-bold text-black mb-4">{{ t.noProducts }}</h3>
+          <p class="font-sans text-black/50 max-w-md">
             {{ t.noProductsDescription }}
           </p>
         </div>
       </template>
-    </div>
+      
+      <!-- Footer -->
+      <footer class="border-t border-black py-12 px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="font-display text-2xl font-bold text-black uppercase">
+            KIOSK<span class="text-accent">.</span>
+          </div>
+          <p class="font-mono text-xs text-black/40 uppercase tracking-wider">
+            © {{ new Date().getFullYear() }} — Brutalist Editorial Design
+          </p>
+        </div>
+      </footer>
+    </main>
     
     <!-- Product Detail Modal -->
     <KioskProductDetailModal
@@ -78,7 +71,7 @@
       @buy-now="handleBuyNowFromModal"
     />
     
-    <!-- Floating Cart Button (only shows when cart has items) -->
+    <!-- Floating Cart Button -->
     <CartFloatingCartButton />
     
     <!-- Toast Notification -->
@@ -94,8 +87,8 @@
         >
           <div 
             v-if="showToast"
-            class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 max-w-md"
-            :class="toastType === 'success' ? 'bg-gray-900 text-white' : 'bg-red-500 text-white'"
+            class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[9999] px-8 py-4 flex items-center gap-4 max-w-md"
+            :class="toastType === 'success' ? 'bg-black text-white' : 'bg-accent text-white'"
           >
             <svg v-if="toastType === 'success'" class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -103,7 +96,7 @@
             <svg v-else class="w-6 h-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <span class="font-medium">{{ toastMessage }}</span>
+            <span class="font-sans font-medium">{{ toastMessage }}</span>
           </div>
         </Transition>
       </Teleport>
@@ -122,17 +115,8 @@ const router = useRouter()
 const { t, initContext, getContextKey, language } = useLanguage()
 const { addToCart, initCart, error: cartError } = useShopwareCart()
 
-// Category colors - subtle, muted tones for Apple style
-const categoryColors = [
-  '#6B7280', // gray
-  '#374151', // dark gray
-  '#4B5563', // medium gray
-  '#1F2937', // charcoal
-  '#6B7280', // gray
-  '#374151', // dark gray
-  '#4B5563', // medium gray
-  '#1F2937', // charcoal
-]
+// Category colors
+const categoryColors = ['#000000', '#1a1a1a', '#333333', '#4d4d4d']
 
 // Refs
 const scrollContainer = ref<HTMLElement | null>(null)
@@ -176,13 +160,7 @@ const productSections = computed(() => {
   return sections
 })
 
-/**
- * Get the Shopware product ID from a product
- * Uses the 'id' field if available, falls back to 'key'
- */
 function getShopwareProductId(product: ProductCard): string {
-  // Use 'id' field if it exists and is different from 'key'
-  // The 'id' field contains the actual Shopware product ID
   return (product as any).id || product.key
 }
 
@@ -206,13 +184,6 @@ async function loadData() {
     console.log('[Kiosk] Categories loaded:', categories.value.length)
     console.log('[Kiosk] Products loaded:', products.value.length)
     
-    // Log first product to see id vs key
-    if (products.value.length > 0) {
-      const firstProduct = products.value[0] as any
-      console.log('[Kiosk] First product - id:', firstProduct.id, 'key:', firstProduct.key)
-    }
-    
-    // Set initial active category
     if (categories.value.length > 0 && !activeCategoryKey.value) {
       activeCategoryKey.value = categories.value[0].key
     }
@@ -224,45 +195,55 @@ async function loadData() {
   }
 }
 
-// Reload data when language changes
 async function reloadData() {
   console.log('[Kiosk] Reloading data after language change...')
   await loadData()
 }
 
-// Initialize on mount
 onMounted(async () => {
   await initContext()
   await Promise.all([
     loadData(),
     initCart()
   ])
+  
+  // Set up scroll listener on window for detecting active category
+  window.addEventListener('scroll', handleScroll)
 })
 
-// Scroll to category section
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+
 function scrollToCategory(categoryKey: string) {
+  // First, immediately set the active category key when clicked
+  activeCategoryKey.value = categoryKey
+  
+  // Then scroll to the category section
   const element = document.getElementById(`category-${categoryKey}`)
-  if (element && scrollContainer.value) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  if (element) {
+    // Account for fixed header height (approximately 120px)
+    const headerOffset = 130
+    const elementPosition = element.getBoundingClientRect().top
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    })
   }
 }
 
-// Update active category based on scroll position
 function handleScroll() {
-  if (!scrollContainer.value) return
+  // Don't update during programmatic scrolling to avoid flickering
+  const headerOffset = 150
   
-  const container = scrollContainer.value
-  const containerTop = container.getBoundingClientRect().top
-  
-  // Find which section is currently most visible
   for (const section of productSections.value) {
     const element = document.getElementById(`category-${section.category.key}`)
     if (element) {
       const rect = element.getBoundingClientRect()
-      const elementTop = rect.top - containerTop
-      
-      // If the section top is near the viewport top (with some threshold)
-      if (elementTop <= 100 && elementTop + rect.height > 100) {
+      // Check if the section is in the viewport (accounting for header)
+      if (rect.top <= headerOffset && rect.bottom > headerOffset) {
         activeCategoryKey.value = section.category.key
         break
       }
@@ -270,30 +251,22 @@ function handleScroll() {
   }
 }
 
-// Get category color by index
 function getCategoryColor(index: number): string {
   return categoryColors[index % categoryColors.length]
 }
 
-// Modal functions
 function openProductModal(product: ProductCard) {
-  console.log('[Kiosk] Opening product modal:', product.name, 'key:', product.key, 'id:', (product as any).id)
   selectedProduct.value = product
   isModalOpen.value = true
-  
-  // Prevent body scroll when modal is open
   document.body.style.overflow = 'hidden'
 }
 
 function closeProductModal() {
   isModalOpen.value = false
   selectedProduct.value = null
-  
-  // Restore body scroll
   document.body.style.overflow = ''
 }
 
-// Show toast notification
 function showToastNotification(message: string, type: 'success' | 'error' = 'success') {
   toastMessage.value = message
   toastType.value = type
@@ -304,17 +277,13 @@ function showToastNotification(message: string, type: 'success' | 'error' = 'suc
   }, 4000)
 }
 
-// Cart & Buy actions from tiles
 async function handleAddToCart(product: ProductCard) {
   const shopwareId = getShopwareProductId(product)
-  console.log('[Kiosk] Add to cart:', product.name, 'shopwareId:', shopwareId)
-  
   const success = await addToCart(shopwareId, 1)
-  console.log('[Kiosk] Add to cart result:', success)
   
   if (success) {
     const message = language.value === 'de' 
-      ? `${product.name} wurde zum Warenkorb hinzugefügt`
+      ? `${product.name} wurde hinzugefügt`
       : `${product.name} added to cart`
     showToastNotification(message, 'success')
   } else {
@@ -327,8 +296,6 @@ async function handleAddToCart(product: ProductCard) {
 
 async function handleBuyNow(product: ProductCard) {
   const shopwareId = getShopwareProductId(product)
-  console.log('[Kiosk] Buy now:', product.name, 'shopwareId:', shopwareId)
-  
   const success = await addToCart(shopwareId, 1)
   
   if (success) {
@@ -341,21 +308,16 @@ async function handleBuyNow(product: ProductCard) {
   }
 }
 
-// Cart & Buy actions from modal
 async function handleAddToCartFromModal(product: ProductCard) {
   const shopwareId = getShopwareProductId(product)
-  console.log('[Kiosk] Add to cart from modal:', product.name, 'shopwareId:', shopwareId)
-  
   addingToCart.value = true
   const success = await addToCart(shopwareId, 1)
-  console.log('[Kiosk] Add to cart from modal result:', success)
   addingToCart.value = false
   
   if (success) {
     closeProductModal()
-    
     const message = language.value === 'de' 
-      ? `${product.name} wurde zum Warenkorb hinzugefügt`
+      ? `${product.name} wurde hinzugefügt`
       : `${product.name} added to cart`
     showToastNotification(message, 'success')
   } else {
@@ -368,8 +330,6 @@ async function handleAddToCartFromModal(product: ProductCard) {
 
 async function handleBuyNowFromModal(product: ProductCard) {
   const shopwareId = getShopwareProductId(product)
-  console.log('[Kiosk] Buy now from modal:', product.name, 'shopwareId:', shopwareId)
-  
   addingToCart.value = true
   const success = await addToCart(shopwareId, 1)
   addingToCart.value = false

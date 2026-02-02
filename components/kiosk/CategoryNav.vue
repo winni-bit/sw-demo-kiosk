@@ -1,78 +1,64 @@
 <template>
-  <header class="bg-white border-b border-gray-200 px-6 py-5 shrink-0">
-    <div class="flex items-center gap-6">
-      <!-- Shop Name -->
-      <div class="flex-shrink-0">
-        <NuxtLink to="/" class="text-2xl font-semibold text-gray-900 tracking-tight hover:text-gray-600 transition-colors">
-          {{ t.shopName }}
-        </NuxtLink>
-      </div>
+  <header class="bg-white fixed top-0 left-0 right-0 z-50">
+    <!-- Top Bar with Logo and Actions -->
+    <div class="flex items-center justify-between px-8 py-4 border-b border-black">
+      <!-- Logo - Bold Typography -->
+      <NuxtLink to="/" class="group">
+        <h1 class="font-display text-3xl md:text-4xl font-bold tracking-tight text-black uppercase">
+          KIOSK<span class="text-accent">.</span>
+        </h1>
+      </NuxtLink>
       
+      <!-- Right Side Actions -->
+      <div class="flex items-center gap-4">
+        <AccountDropdown />
+        <KioskLanguageSwitch @change="$emit('languageChange', $event)" />
+      </div>
+    </div>
+    
+    <!-- Category Strip - Horizontal Scroll -->
+    <div class="border-b border-black overflow-hidden">
       <!-- Loading State -->
-      <div v-if="loading" class="flex items-center gap-4 flex-1">
+      <div v-if="loading" class="flex items-center gap-0 animate-pulse">
         <div
-          v-for="i in 4"
+          v-for="i in 6"
           :key="i"
-          class="w-28 h-28 rounded-2xl bg-gray-100 animate-pulse flex-shrink-0"
+          class="h-16 w-40 bg-gray-100 border-r border-black flex-shrink-0"
         />
       </div>
       
       <!-- Categories -->
-      <div v-else class="flex items-center gap-4 overflow-x-auto scrollbar-hide flex-1">
+      <div v-else class="flex items-stretch overflow-x-auto scrollbar-hide">
         <button
           v-for="(category, index) in categories"
           :key="category.key"
           @click="$emit('select', category.key)"
-          class="group flex-shrink-0 transition-all duration-200"
+          class="group relative flex-shrink-0 h-16 px-8 border-r border-black transition-all duration-200 flex items-center justify-center"
+          :class="[
+            activeKey === category.key
+              ? 'bg-black text-white'
+              : 'bg-white text-black hover:bg-black hover:text-white'
+          ]"
         >
-          <div
-            class="relative w-28 h-28 rounded-2xl overflow-hidden transition-all duration-200 hover:scale-102"
-            :class="[
-              activeKey === category.key
-                ? 'ring-2 ring-gray-900 ring-offset-2 scale-105'
-                : 'opacity-80 hover:opacity-100'
-            ]"
+          <!-- Category Number -->
+          <span 
+            class="absolute top-2 left-3 text-[10px] font-mono opacity-50"
+            :class="activeKey === category.key ? 'text-white' : 'text-black group-hover:text-white'"
           >
-            <!-- Category Image -->
-            <div
-              v-if="category.cover?.src"
-              class="absolute inset-0 bg-cover bg-center"
-              :style="{ backgroundImage: `url(${category.cover.thumbnailSrc || category.cover.src})` }"
-            />
-            <!-- Fallback with subtle gray -->
-            <div
-              v-else
-              class="absolute inset-0 bg-gray-200"
-            />
-            
-            <!-- Overlay -->
-            <div 
-              class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
-            />
-            
-            <!-- Title -->
-            <div class="absolute inset-0 flex items-end p-3">
-              <span 
-                class="text-white text-sm font-medium leading-tight line-clamp-2"
-                :class="{ 'font-semibold': activeKey === category.key }"
-              >
-                {{ getCategoryName(category) }}
-              </span>
-            </div>
-          </div>
+            {{ String(index + 1).padStart(2, '0') }}
+          </span>
+          
+          <!-- Category Name -->
+          <span class="font-sans text-sm font-semibold uppercase tracking-widest whitespace-nowrap">
+            {{ getCategoryName(category) }}
+          </span>
         </button>
-      </div>
-      
-      <!-- Right Side Actions -->
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <!-- Account Dropdown -->
-        <AccountDropdown />
-        
-        <!-- Language Switch -->
-        <KioskLanguageSwitch @change="$emit('languageChange', $event)" />
       </div>
     </div>
   </header>
+  
+  <!-- Spacer for fixed header -->
+  <div class="h-[120px]" />
 </template>
 
 <script setup lang="ts">
@@ -104,8 +90,5 @@ function getCategoryName(category: CategoryCard): string {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-.scale-102 {
-  transform: scale(1.02);
 }
 </style>

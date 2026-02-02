@@ -1,26 +1,26 @@
 <template>
-  <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+  <div class="flex items-center border border-black">
     <button
       @click="handleLanguageChange('de')"
-      class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+      class="px-4 py-2 text-xs font-mono uppercase tracking-wider transition-all duration-200"
       :class="[
         language === 'de'
-          ? 'bg-white text-gray-900 shadow-sm'
-          : 'text-gray-500 hover:text-gray-700'
+          ? 'bg-black text-white'
+          : 'bg-white text-black hover:bg-gray-100'
       ]"
     >
-      🇩🇪 DE
+      DE
     </button>
     <button
       @click="handleLanguageChange('en')"
-      class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+      class="px-4 py-2 text-xs font-mono uppercase tracking-wider transition-all duration-200 border-l border-black"
       :class="[
         language === 'en'
-          ? 'bg-white text-gray-900 shadow-sm'
-          : 'text-gray-500 hover:text-gray-700'
+          ? 'bg-black text-white'
+          : 'bg-white text-black hover:bg-gray-100'
       ]"
     >
-      🇬🇧 EN
+      EN
     </button>
   </div>
 </template>

@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-white">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-100 shadow-sm">
+    <header class="border-b border-black">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <NuxtLink to="/" class="text-xl font-semibold text-gray-900 hover:text-gray-600 transition-colors">
-          Kiosk Shop
+        <NuxtLink to="/" class="font-display text-2xl font-bold text-black uppercase">
+          KIOSK<span class="text-accent">.</span>
         </NuxtLink>
         <AccountDropdown />
       </div>
@@ -14,7 +14,7 @@
       <div class="grid lg:grid-cols-4 gap-8">
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1">
-          <div class="bg-white rounded-2xl shadow-sm p-4">
+          <div class="border border-black p-4">
             <AccountNav />
           </div>
         </aside>
@@ -24,40 +24,36 @@
           <!-- Back Link -->
           <NuxtLink 
             to="/account/orders" 
-            class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors mb-6"
+            class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-black/50 hover:text-black transition-colors mb-6"
           >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+            <span>←</span>
             {{ t.backToOrders }}
           </NuxtLink>
           
           <!-- Loading State -->
           <div v-if="loading" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm p-6 animate-pulse">
-              <div class="h-8 bg-gray-100 rounded w-1/3 mb-4" />
-              <div class="h-4 bg-gray-100 rounded w-1/4" />
+            <div class="border border-black p-6">
+              <div class="h-8 bg-gray-100 animate-pulse w-1/3 mb-4" />
+              <div class="h-4 bg-gray-100 animate-pulse w-1/4" />
             </div>
-            <div class="bg-white rounded-2xl shadow-sm p-6 animate-pulse">
+            <div class="border border-black p-6">
               <div class="space-y-4">
-                <div class="h-20 bg-gray-100 rounded-xl" />
-                <div class="h-20 bg-gray-100 rounded-xl" />
+                <div class="h-20 bg-gray-100 animate-pulse" />
+                <div class="h-20 bg-gray-100 animate-pulse" />
               </div>
             </div>
           </div>
           
           <!-- Order Not Found -->
-          <div v-else-if="!order" class="bg-white rounded-2xl shadow-sm p-12 text-center">
-            <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
-              <svg class="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+          <div v-else-if="!order" class="border border-black p-12 text-center">
+            <div class="w-20 h-20 border-2 border-black/20 flex items-center justify-center mx-auto mb-6">
+              <span class="font-display text-3xl text-black/20">?</span>
             </div>
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ t.orderNotFound }}</h2>
-            <p class="text-gray-500 mb-6">{{ t.orderNotFoundDescription }}</p>
+            <h2 class="font-display text-2xl font-bold text-black uppercase mb-4">{{ t.orderNotFound }}</h2>
+            <p class="font-sans text-black/50 mb-8">{{ t.orderNotFoundDescription }}</p>
             <NuxtLink 
               to="/account/orders" 
-              class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+              class="inline-block px-8 py-4 bg-black text-white font-sans font-semibold uppercase tracking-widest hover:bg-accent transition-colors"
             >
               {{ t.viewAllOrders }}
             </NuxtLink>
@@ -66,39 +62,39 @@
           <!-- Order Details -->
           <div v-else class="space-y-6">
             <!-- Order Header -->
-            <div class="bg-white rounded-2xl shadow-sm p-6">
+            <div class="border border-black p-6">
               <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h1 class="text-2xl font-semibold text-gray-900 mb-2">
+                  <h1 class="font-display text-3xl font-bold text-black uppercase mb-2">
                     {{ t.orderNumber }} {{ order.orderNumber }}
                   </h1>
-                  <p class="text-gray-500">
+                  <p class="font-mono text-sm text-black/50">
                     {{ t.orderedOn }} {{ formatDate(order.orderDateTime) }}
                   </p>
                 </div>
-                <div class="text-right">
-                  <span 
-                    class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium"
-                    :class="getStatusClasses(order.stateMachineState?.technicalName)"
-                  >
-                    {{ order.stateMachineState?.name || t.statusUnknown }}
-                  </span>
-                </div>
+                <span 
+                  class="inline-flex items-center px-4 py-2 text-sm font-mono uppercase tracking-wider"
+                  :class="getStatusClasses(order.stateMachineState?.technicalName)"
+                >
+                  {{ order.stateMachineState?.name || t.statusUnknown }}
+                </span>
               </div>
             </div>
             
             <!-- Order Items -->
-            <div class="bg-white rounded-2xl shadow-sm p-6">
-              <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.items }}</h2>
+            <div class="border border-black">
+              <div class="px-6 py-4 border-b border-black bg-gray-50">
+                <h2 class="font-display text-lg font-bold text-black uppercase">{{ t.items }}</h2>
+              </div>
               
-              <div class="space-y-4">
+              <div class="divide-y divide-black/10">
                 <div 
                   v-for="item in order.lineItems" 
                   :key="item.id"
-                  class="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100"
+                  class="p-6 flex gap-4"
                 >
                   <!-- Item Image -->
-                  <div class="w-20 h-20 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                  <div class="w-20 h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
                     <img 
                       v-if="item.cover?.url" 
                       :src="item.cover.url" 
@@ -106,27 +102,25 @@
                       class="w-full h-full object-cover"
                     />
                     <div v-else class="w-full h-full flex items-center justify-center">
-                      <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
+                      <span class="font-display text-2xl text-gray-300">?</span>
                     </div>
                   </div>
                   
                   <!-- Item Info -->
                   <div class="flex-1 min-w-0">
-                    <h3 class="font-medium text-gray-900 truncate">{{ item.label }}</h3>
-                    <p v-if="item.payload?.productNumber" class="text-sm text-gray-400">
+                    <h3 class="font-sans font-semibold text-black truncate">{{ item.label }}</h3>
+                    <p v-if="item.payload?.productNumber" class="font-mono text-xs text-black/40">
                       {{ t.articleNumber }}: {{ item.payload.productNumber }}
                     </p>
-                    <p class="text-sm text-gray-500 mt-1">
+                    <p class="font-mono text-xs text-black/50 mt-1">
                       {{ t.quantity }}: {{ item.quantity }}
                     </p>
                   </div>
                   
                   <!-- Item Price -->
                   <div class="text-right flex-shrink-0">
-                    <p class="font-semibold text-gray-900">{{ formatPrice(item.totalPrice) }}</p>
-                    <p v-if="item.quantity > 1" class="text-sm text-gray-400">
+                    <p class="font-mono font-bold text-accent">{{ formatPrice(item.totalPrice) }}</p>
+                    <p v-if="item.quantity > 1" class="font-mono text-xs text-black/40">
                       {{ formatPrice(item.unitPrice) }} {{ t.perItem }}
                     </p>
                   </div>
@@ -137,73 +131,73 @@
             <!-- Addresses & Payment -->
             <div class="grid md:grid-cols-2 gap-6">
               <!-- Billing Address -->
-              <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.billingAddress }}</h2>
-                <CustomerAddressDisplay 
+              <div class="border border-black p-6">
+                <h2 class="font-display text-lg font-bold text-black uppercase mb-4">{{ t.billingAddress }}</h2>
+                <AccountCustomerAddressDisplay 
                   v-if="order.billingAddress" 
                   :address="order.billingAddress" 
                 />
-                <p v-else class="text-gray-400">{{ t.noAddress }}</p>
+                <p v-else class="font-sans text-black/40">{{ t.noAddress }}</p>
               </div>
               
               <!-- Shipping Address -->
-              <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.shippingAddress }}</h2>
-                <CustomerAddressDisplay 
+              <div class="border border-black p-6">
+                <h2 class="font-display text-lg font-bold text-black uppercase mb-4">{{ t.shippingAddress }}</h2>
+                <AccountCustomerAddressDisplay 
                   v-if="shippingAddress" 
                   :address="shippingAddress" 
                 />
-                <p v-else class="text-gray-400">{{ t.noAddress }}</p>
+                <p v-else class="font-sans text-black/40">{{ t.noAddress }}</p>
               </div>
             </div>
             
             <!-- Payment & Shipping Method -->
             <div class="grid md:grid-cols-2 gap-6">
               <!-- Payment Method -->
-              <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.paymentMethod }}</h2>
+              <div class="border border-black p-6">
+                <h2 class="font-display text-lg font-bold text-black uppercase mb-4">{{ t.paymentMethod }}</h2>
                 <div v-if="paymentMethod">
-                  <p class="text-gray-900 font-medium">{{ paymentMethod.name }}</p>
-                  <p v-if="paymentStatus" class="text-sm mt-1" :class="getStatusClasses(paymentStatus.technicalName)">
+                  <p class="font-sans font-semibold text-black">{{ paymentMethod.name }}</p>
+                  <p v-if="paymentStatus" class="font-mono text-xs mt-1" :class="getStatusClasses(paymentStatus.technicalName)">
                     {{ paymentStatus.name }}
                   </p>
                 </div>
-                <p v-else class="text-gray-400">{{ t.noPaymentMethod }}</p>
+                <p v-else class="font-sans text-black/40">{{ t.noPaymentMethod }}</p>
               </div>
               
               <!-- Shipping Method -->
-              <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.shippingMethod }}</h2>
+              <div class="border border-black p-6">
+                <h2 class="font-display text-lg font-bold text-black uppercase mb-4">{{ t.shippingMethod }}</h2>
                 <div v-if="shippingMethod">
-                  <p class="text-gray-900 font-medium">{{ shippingMethod.name }}</p>
-                  <p v-if="trackingCodes.length > 0" class="text-sm text-gray-500 mt-1">
+                  <p class="font-sans font-semibold text-black">{{ shippingMethod.name }}</p>
+                  <p v-if="trackingCodes.length > 0" class="font-mono text-xs text-black/50 mt-1">
                     {{ t.tracking }}: {{ trackingCodes.join(', ') }}
                   </p>
                 </div>
-                <p v-else class="text-gray-400">{{ t.noShippingMethod }}</p>
+                <p v-else class="font-sans text-black/40">{{ t.noShippingMethod }}</p>
               </div>
             </div>
             
             <!-- Order Summary -->
-            <div class="bg-white rounded-2xl shadow-sm p-6">
-              <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t.orderSummary }}</h2>
+            <div class="border border-black p-6">
+              <h2 class="font-display text-lg font-bold text-black uppercase mb-4">{{ t.orderSummary }}</h2>
               
               <div class="space-y-3">
-                <div class="flex justify-between text-gray-500">
+                <div class="flex justify-between font-sans text-black/60">
                   <span>{{ t.subtotal }}</span>
                   <span>{{ formatPrice(order.amountNet) }}</span>
                 </div>
-                <div class="flex justify-between text-gray-500">
+                <div class="flex justify-between font-sans text-black/60">
                   <span>{{ t.shipping }}</span>
                   <span>{{ formatPrice(order.shippingTotal) }}</span>
                 </div>
-                <div class="flex justify-between text-gray-500">
+                <div class="flex justify-between font-sans text-black/60">
                   <span>{{ t.tax }}</span>
                   <span>{{ formatPrice(order.amountTotal - order.amountNet) }}</span>
                 </div>
-                <div class="border-t border-gray-100 pt-3 flex justify-between">
-                  <span class="text-lg font-semibold text-gray-900">{{ t.total }}</span>
-                  <span class="text-lg font-semibold text-gray-900">{{ formatPrice(order.amountTotal) }}</span>
+                <div class="border-t border-black pt-4 flex justify-between">
+                  <span class="font-display font-bold text-black uppercase">{{ t.total }}</span>
+                  <span class="font-mono text-2xl font-bold text-accent">{{ formatPrice(order.amountTotal) }}</span>
                 </div>
               </div>
             </div>
@@ -226,11 +220,9 @@ const route = useRoute()
 const { fetchOrder } = useShopwareAuth()
 const { language } = useLanguage()
 
-// State
 const order = ref<ShopwareOrder | null>(null)
 const loading = ref(true)
 
-// Translations
 const translations = {
   de: {
     backToOrders: 'Zurück zu Bestellungen',
@@ -256,7 +248,7 @@ const translations = {
     total: 'Gesamtsumme',
     orderNotFound: 'Bestellung nicht gefunden',
     orderNotFoundDescription: 'Die angeforderte Bestellung konnte nicht gefunden werden.',
-    viewAllOrders: 'Alle Bestellungen anzeigen',
+    viewAllOrders: 'Alle Bestellungen',
   },
   en: {
     backToOrders: 'Back to Orders',
@@ -288,7 +280,6 @@ const translations = {
 
 const t = computed(() => translations[language.value])
 
-// Computed
 const shippingAddress = computed((): ShopwareAddress | null => {
   if (!order.value?.deliveries || order.value.deliveries.length === 0) return null
   return order.value.deliveries[0].shippingOrderAddress || null
@@ -314,7 +305,6 @@ const paymentStatus = computed(() => {
   return order.value.transactions[0].stateMachineState || null
 })
 
-// Load order
 onMounted(async () => {
   const orderId = route.params.id as string
   
@@ -327,7 +317,6 @@ onMounted(async () => {
   }
 })
 
-// Format date
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
   const locale = language.value === 'de' ? 'de-DE' : 'en-GB'
@@ -340,7 +329,6 @@ function formatDate(dateString: string): string {
   })
 }
 
-// Format price
 function formatPrice(amount: number): string {
   const locale = language.value === 'de' ? 'de-DE' : 'en-GB'
   const currencyCode = order.value?.currency?.isoCode || 'EUR'
@@ -351,20 +339,19 @@ function formatPrice(amount: number): string {
   }).format(amount)
 }
 
-// Get status classes
 function getStatusClasses(status?: string): string {
   switch (status) {
     case 'completed':
     case 'paid':
-      return 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+      return 'bg-green-100 text-green-800 border border-green-300'
     case 'cancelled':
     case 'refunded':
-      return 'bg-red-50 text-red-700 border border-red-200'
+      return 'bg-accent/10 text-accent border border-accent'
     case 'in_progress':
     case 'open':
-      return 'bg-amber-50 text-amber-700 border border-amber-200'
+      return 'bg-yellow-100 text-yellow-800 border border-yellow-300'
     default:
-      return 'bg-gray-100 text-gray-600'
+      return 'bg-gray-100 text-black/60 border border-black/20'
   }
 }
 </script>

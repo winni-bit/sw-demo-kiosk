@@ -4,15 +4,15 @@
     <template v-if="isLoggedIn">
       <button
         @click="isDropdownOpen = !isDropdownOpen"
-        class="flex items-center gap-2 px-4 py-3 bg-gray-100 text-gray-900 rounded-xl font-medium text-base hover:bg-gray-200 transition-all"
+        class="flex items-center gap-3 px-4 py-2 border border-black hover:bg-black hover:text-white transition-all"
       >
-        <!-- User Initials Avatar -->
-        <div class="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center">
-          <span class="text-sm font-semibold">{{ customerInitials }}</span>
+        <!-- User Initials -->
+        <div class="w-8 h-8 bg-black text-white flex items-center justify-center">
+          <span class="font-mono text-xs font-bold">{{ customerInitials }}</span>
         </div>
         <!-- Chevron -->
         <svg 
-          class="w-4 h-4 transition-transform text-gray-600"
+          class="w-4 h-4 transition-transform"
           :class="{ 'rotate-180': isDropdownOpen }"
           fill="none" 
           viewBox="0 0 24 24" 
@@ -25,20 +25,20 @@
       <!-- Dropdown Menu -->
       <Transition
         enter-active-class="transition ease-out duration-100"
-        enter-from-class="transform opacity-0 scale-95"
-        enter-to-class="transform scale-100 opacity-100"
+        enter-from-class="transform opacity-0 -translate-y-2"
+        enter-to-class="transform opacity-100 translate-y-0"
         leave-active-class="transition ease-in duration-75"
-        leave-from-class="transform opacity-100 scale-100"
-        leave-to-class="transform opacity-0 scale-95"
+        leave-from-class="transform opacity-100 translate-y-0"
+        leave-to-class="transform opacity-0 -translate-y-2"
       >
         <div 
           v-if="isDropdownOpen"
-          class="absolute right-0 mt-3 w-72 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50"
+          class="absolute right-0 mt-2 w-72 bg-white border border-black z-50"
         >
           <!-- Customer Info -->
-          <div class="px-5 py-4 border-b border-gray-100 bg-gray-50">
-            <p class="text-base font-semibold text-gray-900 truncate">{{ displayName }}</p>
-            <p class="text-sm text-gray-500 truncate">{{ customerEmail }}</p>
+          <div class="px-5 py-4 border-b border-black bg-gray-50">
+            <p class="font-sans font-semibold text-black truncate">{{ displayName }}</p>
+            <p class="font-mono text-xs text-black/50 truncate">{{ customerEmail }}</p>
           </div>
           
           <!-- Menu Items -->
@@ -46,35 +46,28 @@
             <NuxtLink
               to="/account"
               @click="isDropdownOpen = false"
-              class="flex items-center gap-4 px-5 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+              class="flex items-center gap-4 px-5 py-3 text-black hover:bg-black hover:text-white transition-colors"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span class="text-base">{{ t.dashboard }}</span>
+              <span class="font-mono text-xs">01</span>
+              <span class="font-sans text-sm uppercase tracking-wider">{{ t.dashboard }}</span>
             </NuxtLink>
             
             <NuxtLink
               to="/account/orders"
               @click="isDropdownOpen = false"
-              class="flex items-center gap-4 px-5 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+              class="flex items-center gap-4 px-5 py-3 text-black hover:bg-black hover:text-white transition-colors"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              <span class="text-base">{{ t.orders }}</span>
+              <span class="font-mono text-xs">02</span>
+              <span class="font-sans text-sm uppercase tracking-wider">{{ t.orders }}</span>
             </NuxtLink>
           </div>
           
           <!-- Logout -->
-          <div class="border-t border-gray-100 p-3">
+          <div class="border-t border-black p-3">
             <button
               @click="handleLogout"
-              class="w-full flex items-center justify-center gap-3 px-5 py-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors text-base font-medium"
+              class="w-full flex items-center justify-center gap-3 px-5 py-3 bg-accent text-white hover:bg-accent-dark transition-colors font-sans text-sm uppercase tracking-wider font-semibold"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
               {{ t.logout }}
             </button>
           </div>
@@ -86,16 +79,13 @@
     <template v-else>
       <button
         @click="openLoginModal"
-        class="flex items-center gap-2 px-5 py-3 bg-gray-900 text-white rounded-xl font-medium text-base hover:bg-gray-800 transition-all"
+        class="flex items-center gap-2 px-6 py-2 bg-black text-white font-sans text-sm uppercase tracking-wider font-semibold hover:bg-accent transition-all"
       >
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
         {{ t.login }}
       </button>
     </template>
     
-    <!-- Login Modal Overlay (Client-side only) -->
+    <!-- Login Modal -->
     <ClientOnly>
       <Teleport to="body">
         <Transition
@@ -108,7 +98,7 @@
         >
           <div 
             v-if="isLoginModalOpen" 
-            class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] flex items-center justify-center p-6"
+            class="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-6"
             @click.self="closeLoginModal"
           >
             <Transition
@@ -121,17 +111,17 @@
             >
               <div 
                 v-if="isLoginModalOpen"
-                class="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+                class="w-full max-w-md bg-white border border-black"
                 @click.stop
               >
                 <!-- Modal Header -->
-                <div class="flex items-center justify-between px-8 py-6 border-b border-gray-100">
-                  <h2 class="text-2xl font-semibold text-gray-900">{{ t.loginTitle }}</h2>
+                <div class="flex items-center justify-between px-8 py-6 border-b border-black">
+                  <h2 class="font-display text-2xl font-bold text-black uppercase">{{ t.loginTitle }}</h2>
                   <button
                     @click="closeLoginModal"
-                    class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    class="w-10 h-10 bg-black text-white flex items-center justify-center hover:bg-accent transition-colors"
                   >
-                    <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -142,7 +132,7 @@
                   <!-- Error Message -->
                   <div 
                     v-if="loginError" 
-                    class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-base"
+                    class="mb-6 p-4 bg-accent/10 border border-accent text-accent text-sm"
                   >
                     {{ loginError }}
                   </div>
@@ -151,7 +141,7 @@
                   <form @submit.prevent="handleLogin" class="space-y-6">
                     <!-- Email -->
                     <div>
-                      <label for="login-email" class="block text-base font-medium text-gray-700 mb-2">
+                      <label for="login-email" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
                         {{ t.email }}
                       </label>
                       <input
@@ -161,14 +151,14 @@
                         required
                         autocomplete="email"
                         :placeholder="t.emailPlaceholder"
-                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all"
+                        class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
                         :disabled="isLoggingIn"
                       />
                     </div>
                     
                     <!-- Password -->
                     <div>
-                      <label for="login-password" class="block text-base font-medium text-gray-700 mb-2">
+                      <label for="login-password" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
                         {{ t.password }}
                       </label>
                       <div class="relative">
@@ -179,13 +169,13 @@
                           required
                           autocomplete="current-password"
                           :placeholder="t.passwordPlaceholder"
-                          class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-400 transition-all pr-12"
+                          class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all pr-12"
                           :disabled="isLoggingIn"
                         />
                         <button
                           type="button"
                           @click="showPassword = !showPassword"
-                          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
                         >
                           <svg v-if="showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
@@ -202,7 +192,7 @@
                     <button
                       type="submit"
                       :disabled="isLoggingIn || !loginForm.email || !loginForm.password"
-                      class="w-full py-4 px-6 bg-gray-900 text-white rounded-xl font-semibold text-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3"
+                      class="w-full py-4 px-6 bg-black text-white font-sans font-semibold uppercase tracking-widest hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3"
                     >
                       <svg 
                         v-if="isLoggingIn" 
@@ -219,10 +209,10 @@
                 </div>
                 
                 <!-- Register Link -->
-                <div class="px-8 py-6 bg-gray-50 border-t border-gray-100">
+                <div class="px-8 py-6 bg-gray-50 border-t border-black">
                   <button
                     @click="goToRegister"
-                    class="w-full py-4 px-6 bg-transparent border border-gray-300 text-gray-700 rounded-xl font-medium text-base hover:border-gray-400 hover:text-gray-900 transition-all"
+                    class="w-full py-4 px-6 bg-transparent border border-black text-black font-sans font-medium uppercase tracking-wider hover:bg-black hover:text-white transition-all"
                   >
                     {{ t.noAccount }}
                   </button>
@@ -258,13 +248,13 @@ const translations = {
   de: {
     login: 'Anmelden',
     loginTitle: 'Anmelden',
-    loginButton: 'Jetzt anmelden',
+    loginButton: 'Jetzt Anmelden',
     loggingIn: 'Wird angemeldet...',
-    email: 'E-Mail-Adresse',
+    email: 'E-Mail',
     emailPlaceholder: 'ihre@email.de',
     password: 'Passwort',
     passwordPlaceholder: 'Ihr Passwort',
-    noAccount: 'Noch kein Kunde? Hier registrieren',
+    noAccount: 'Noch kein Konto? Registrieren',
     dashboard: 'Mein Konto',
     orders: 'Bestellungen',
     logout: 'Abmelden',
@@ -274,11 +264,11 @@ const translations = {
     loginTitle: 'Sign In',
     loginButton: 'Sign In Now',
     loggingIn: 'Signing in...',
-    email: 'Email Address',
+    email: 'Email',
     emailPlaceholder: 'your@email.com',
     password: 'Password',
     passwordPlaceholder: 'Your password',
-    noAccount: 'No account yet? Register here',
+    noAccount: 'No account? Register',
     dashboard: 'My Account',
     orders: 'Orders',
     logout: 'Sign Out',
@@ -287,7 +277,6 @@ const translations = {
 
 const t = computed(() => translations[language.value])
 
-// Customer display name with fallback
 const displayName = computed(() => {
   if (!customer.value) return ''
   const firstName = customer.value.firstName || ''
@@ -296,7 +285,6 @@ const displayName = computed(() => {
   return fullName || customer.value.email || ''
 })
 
-// Customer initials for avatar
 const customerInitials = computed(() => {
   if (!customer.value) return '?'
   const firstName = customer.value.firstName || ''
@@ -309,30 +297,23 @@ const customerInitials = computed(() => {
   return '?'
 })
 
-// Open login modal
 function openLoginModal() {
-  console.log('[AccountDropdown] Opening login modal')
   isLoginModalOpen.value = true
 }
 
-// Close login modal
 function closeLoginModal() {
-  console.log('[AccountDropdown] Closing login modal')
   isLoginModalOpen.value = false
 }
 
-// Close dropdown when clicking outside
 function handleClickOutside(event: MouseEvent) {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     isDropdownOpen.value = false
   }
 }
 
-// Handle login
 async function handleLogin() {
   if (!loginForm.email || !loginForm.password) return
   
-  console.log('[AccountDropdown] Attempting login...')
   isLoggingIn.value = true
   loginError.value = null
   clearError()
@@ -341,38 +322,31 @@ async function handleLogin() {
     const success = await login(loginForm.email, loginForm.password)
     
     if (success) {
-      console.log('[AccountDropdown] Login successful')
       isLoginModalOpen.value = false
       loginForm.email = ''
       loginForm.password = ''
     } else {
-      console.log('[AccountDropdown] Login failed:', error.value)
       loginError.value = error.value || 'Login fehlgeschlagen'
     }
   } catch (err: any) {
-    console.error('[AccountDropdown] Login error:', err)
     loginError.value = err.message || 'Login fehlgeschlagen'
   } finally {
     isLoggingIn.value = false
   }
 }
 
-// Handle logout
 async function handleLogout() {
   isDropdownOpen.value = false
   await logout()
   router.push('/')
 }
 
-// Go to register page
 function goToRegister() {
   isLoginModalOpen.value = false
   router.push('/account/register')
 }
 
-// Reset form when modal closes
 watch(isLoginModalOpen, (isOpen) => {
-  console.log('[AccountDropdown] Modal state changed:', isOpen)
   if (!isOpen) {
     loginError.value = null
     showPassword.value = false

@@ -1,67 +1,65 @@
 <template>
   <div
-    class="group bg-white rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-lg flex flex-col"
+    class="group relative bg-white cursor-pointer overflow-hidden"
+    :class="[
+      featured ? 'col-span-2 row-span-2' : '',
+      tall ? 'row-span-2' : ''
+    ]"
+    @click="$emit('click', product)"
   >
-    <!-- Clickable Area for Details -->
-    <button
-      @click="$emit('click', product)"
-      class="cursor-pointer text-left"
-    >
-      <!-- Product Image -->
-      <div class="aspect-square relative overflow-hidden bg-gray-50">
-        <img
-          v-if="hasImage"
-          :src="product.cover?.thumbnailSrc || product.cover?.src"
-          :alt="product.name || 'Produkt'"
-          class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-        />
-        <!-- Fallback Gradient -->
-        <div
-          v-else
-          class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
-        >
-          <svg class="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
+    <!-- Product Image - Full Bleed -->
+    <div class="relative aspect-square overflow-hidden bg-gray-100">
+      <img
+        v-if="hasImage"
+        :src="product.cover?.src || product.cover?.thumbnailSrc"
+        :alt="product.name || 'Produkt'"
+        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        loading="lazy"
+      />
+      <!-- Fallback Gradient -->
+      <div
+        v-else
+        class="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300"
+      />
+      
+      <!-- Hover Overlay with Actions -->
+      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+        <div class="flex flex-col gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+          <!-- Add to Cart -->
+          <button
+            @click.stop="$emit('addToCart', product)"
+            class="px-8 py-3 bg-white text-black font-sans text-sm font-semibold uppercase tracking-widest hover:bg-accent hover:text-white transition-colors"
+          >
+            {{ t.addToCart }}
+          </button>
+          
+          <!-- Buy Now -->
+          <button
+            @click.stop="$emit('buyNow', product)"
+            class="px-8 py-3 bg-accent text-white font-sans text-sm font-semibold uppercase tracking-widest hover:bg-accent-dark transition-colors"
+          >
+            {{ t.buyNow }}
+          </button>
         </div>
       </div>
       
-      <!-- Product Info -->
-      <div class="p-4 flex flex-col gap-1">
-        <h3 class="text-gray-900 text-base font-medium leading-snug line-clamp-2">
-          {{ product.name || 'Produkt' }}
-        </h3>
-        
-        <span class="text-xl font-semibold text-gray-900">
-          {{ formattedPrice }}
-        </span>
+      <!-- Product Number Badge -->
+      <div class="absolute top-4 left-4 font-mono text-[10px] text-black/50 bg-white/80 px-2 py-1">
+        № {{ productNumber }}
       </div>
-    </button>
+    </div>
     
-    <!-- Action Buttons -->
-    <div class="px-4 pb-4 flex gap-2 mt-auto">
-      <!-- Add to Cart -->
-      <button
-        @click.stop="$emit('addToCart', product)"
-        class="flex-1 py-2.5 px-3 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-1.5"
-      >
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-        {{ t.addToCart }}
-      </button>
+    <!-- Product Info - Revealed on Hover or Always Visible -->
+    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white to-transparent transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
+      <!-- Product Name - Bold Serif -->
+      <h3 class="font-display text-xl md:text-2xl font-bold text-black leading-tight line-clamp-2 mb-1">
+        {{ product.name || 'Produkt' }}
+      </h3>
       
-      <!-- Buy Now -->
-      <button
-        @click.stop="$emit('buyNow', product)"
-        class="flex-1 py-2.5 px-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-1.5"
-      >
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-        {{ t.buyNow }}
-      </button>
+      <!-- Price - Monospace -->
+      <span class="font-mono text-lg font-bold text-accent">
+        {{ formattedPrice }}
+      </span>
     </div>
   </div>
 </template>
@@ -69,6 +67,9 @@
 <script setup lang="ts">
 const props = defineProps<{
   product: ProductCard
+  index?: number
+  featured?: boolean
+  tall?: boolean
 }>()
 
 defineEmits<{
@@ -82,16 +83,21 @@ const { language } = useLanguage()
 // Translations
 const translations = {
   de: {
-    addToCart: 'Warenkorb',
-    buyNow: 'Kaufen',
+    addToCart: 'In den Warenkorb',
+    buyNow: 'Jetzt Kaufen',
   },
   en: {
-    addToCart: 'Add',
-    buyNow: 'Buy',
+    addToCart: 'Add to Cart',
+    buyNow: 'Buy Now',
   }
 }
 
 const t = computed(() => translations[language.value])
+
+// Product number for display
+const productNumber = computed(() => {
+  return String((props.index || 0) + 1).padStart(3, '0')
+})
 
 // Check if product has a valid image
 const hasImage = computed(() => {
