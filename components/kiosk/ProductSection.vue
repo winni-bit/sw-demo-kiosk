@@ -24,7 +24,7 @@
     </div>
     
     <!-- Products Grid - Responsive Layout -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-black">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       <KioskProductTile
         v-for="(product, index) in products"
         :key="product.key"
@@ -32,7 +32,7 @@
         :index="index"
         :featured="shouldBeFeatured(index)"
         :tall="shouldBeTall(index)"
-        class="bg-white"
+        class="border-r border-b border-black last:border-r-0 [&:nth-child(2n)]:border-r-0 md:[&:nth-child(2n)]:border-r md:[&:nth-child(3n)]:border-r-0 lg:[&:nth-child(3n)]:border-r lg:[&:nth-child(4n)]:border-r-0 xl:[&:nth-child(4n)]:border-r xl:[&:nth-child(5n)]:border-r-0"
         @click="$emit('select', product)"
         @add-to-cart="$emit('addToCart', product)"
         @buy-now="$emit('buyNow', product)"
@@ -71,14 +71,12 @@ const categoryName = computed(() => {
   return props.category.title || 'Kategorie'
 })
 
-// Asymmetric layout logic - disabled on mobile for better UX
+// Asymmetric layout logic - only on desktop
 function shouldBeFeatured(index: number): boolean {
-  // Only feature on larger screens with enough products
-  return index === 0 && props.products.length > 4
+  return false // Disabled for consistent layout
 }
 
 function shouldBeTall(index: number): boolean {
-  // Only tall on larger screens
-  return index > 0 && index % 7 === 3 && props.products.length > 6
+  return false // Disabled for consistent layout
 }
 </script>
