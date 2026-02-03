@@ -6,25 +6,25 @@
     <!-- Category Header - Full Width -->
     <div class="flex items-stretch border-b border-black">
       <!-- Category Title - Large Typography -->
-      <div class="flex-1 px-8 py-6 flex items-center gap-6">
-        <span class="font-mono text-sm text-black/40">
+      <div class="flex-1 px-4 py-4 md:px-8 md:py-6 flex items-center gap-3 md:gap-6">
+        <span class="font-mono text-xs md:text-sm text-black/40">
           {{ String(sectionIndex + 1).padStart(2, '0') }}
         </span>
-        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-black uppercase tracking-tight">
+        <h2 class="font-display text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-black uppercase tracking-tight">
           {{ categoryName }}
         </h2>
       </div>
       
       <!-- Product Count -->
-      <div class="px-8 py-6 border-l border-black flex items-center justify-center min-w-[120px]">
-        <span class="font-mono text-sm text-black/60">
+      <div class="px-4 py-4 md:px-8 md:py-6 border-l border-black flex items-center justify-center min-w-[80px] md:min-w-[120px]">
+        <span class="font-mono text-xs md:text-sm text-black/60">
           {{ products.length }} {{ products.length === 1 ? t.product : t.products }}
         </span>
       </div>
     </div>
     
-    <!-- Products Grid - Asymmetric Layout -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <!-- Products Grid - Responsive Layout -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-black">
       <KioskProductTile
         v-for="(product, index) in products"
         :key="product.key"
@@ -32,7 +32,7 @@
         :index="index"
         :featured="shouldBeFeatured(index)"
         :tall="shouldBeTall(index)"
-        class="border-r border-b border-black last:border-r-0"
+        class="bg-white"
         @click="$emit('select', product)"
         @add-to-cart="$emit('addToCart', product)"
         @buy-now="$emit('buyNow', product)"
@@ -71,14 +71,14 @@ const categoryName = computed(() => {
   return props.category.title || 'Kategorie'
 })
 
-// Asymmetric layout logic
+// Asymmetric layout logic - disabled on mobile for better UX
 function shouldBeFeatured(index: number): boolean {
-  // First item of each section is featured (larger)
+  // Only feature on larger screens with enough products
   return index === 0 && props.products.length > 4
 }
 
 function shouldBeTall(index: number): boolean {
-  // Every 5th item is tall (spans 2 rows)
+  // Only tall on larger screens
   return index > 0 && index % 7 === 3 && props.products.length > 6
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div
     class="group relative bg-white border-2 border-black overflow-hidden cursor-pointer touch-manipulation"
-    @click="$emit('click', product)"
+    @click="handleClick"
   >
     <!-- Product Image -->
     <div class="relative aspect-square overflow-hidden bg-gray-100">
@@ -23,22 +23,22 @@
       <!-- Quantity Badge (for cart items) -->
       <div 
         v-if="quantity && quantity > 1" 
-        class="absolute top-3 right-3 bg-black text-white font-mono text-sm font-bold px-3 py-1"
+        class="absolute top-2 right-2 md:top-3 md:right-3 bg-black text-white font-mono text-xs md:text-sm font-bold px-2 py-0.5 md:px-3 md:py-1"
       >
         {{ quantity }}×
       </div>
     </div>
     
     <!-- Product Info -->
-    <div class="p-4">
+    <div class="p-3 md:p-4">
       <!-- Product Name -->
-      <h3 class="font-display text-lg font-bold text-black leading-tight line-clamp-2 mb-2">
+      <h3 class="font-display text-base md:text-lg font-bold text-black leading-tight line-clamp-2 mb-2">
         {{ product.name || product.label || 'Produkt' }}
       </h3>
       
       <!-- Price -->
-      <div class="flex items-center justify-between">
-        <span class="font-mono text-xl font-bold text-accent">
+      <div class="flex items-center justify-between mb-3 md:mb-0">
+        <span class="font-mono text-lg md:text-xl font-bold text-accent">
           {{ formattedPrice }}
         </span>
         
@@ -47,12 +47,39 @@
           {{ formattedUnitPrice }} {{ t.each }}
         </span>
       </div>
+      
+      <!-- Mobile Action Buttons - Always Visible -->
+      <div v-if="showActions" class="md:hidden flex gap-2 mt-3">
+        <button
+          @click.stop="$emit('addToCart', product)"
+          class="flex-1 py-2.5 bg-black text-white font-sans text-xs font-bold uppercase tracking-wider active:bg-gray-800 transition-colors"
+        >
+          <span class="flex items-center justify-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            {{ t.cart }}
+          </span>
+        </button>
+        
+        <button
+          @click.stop="$emit('buyNow', product)"
+          class="flex-1 py-2.5 bg-accent text-white font-sans text-xs font-bold uppercase tracking-wider active:bg-accent-dark transition-colors"
+        >
+          <span class="flex items-center justify-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            {{ t.buy }}
+          </span>
+        </button>
+      </div>
     </div>
     
-    <!-- Action Buttons (shown on hover or always on touch) -->
+    <!-- Desktop Action Buttons (shown on hover) -->
     <div 
       v-if="showActions"
-      class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      class="hidden md:flex absolute inset-0 bg-black/80 flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
     >
       <button
         @click.stop="$emit('addToCart', product)"
@@ -96,7 +123,7 @@ const props = defineProps<{
   showActions?: boolean
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   click: [product: ProductLike]
   addToCart: [product: ProductLike]
   buyNow: [product: ProductLike]
@@ -108,11 +135,15 @@ const translations = {
   de: {
     addToCart: 'In den Warenkorb',
     buyNow: 'Jetzt Kaufen',
+    cart: 'Warenkorb',
+    buy: 'Kaufen',
     each: 'pro Stück',
   },
   en: {
     addToCart: 'Add to Cart',
     buyNow: 'Buy Now',
+    cart: 'Cart',
+    buy: 'Buy',
     each: 'each',
   }
 }
@@ -156,5 +187,13 @@ function formatCurrency(amount: number, currency: string = 'EUR'): string {
     style: 'currency',
     currency: currency
   }).format(amount)
+}
+
+// Handle click - on mobile, don't trigger if clicking buttons
+function handleClick(event: Event) {
+  const target = event.target as HTMLElement
+  if (!target.closest('button')) {
+    emit('click', props.product)
+  }
 }
 </script>

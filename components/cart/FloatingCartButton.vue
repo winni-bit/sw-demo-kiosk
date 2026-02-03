@@ -13,13 +13,14 @@
         <button
           v-if="itemCount > 0"
           @click="openCart"
-          class="fixed bottom-8 right-8 z-[9990] w-20 h-20 bg-black flex flex-col items-center justify-center gap-1 hover:bg-accent active:scale-95 transition-all duration-200"
+          class="fixed z-[9990] bg-black flex flex-col items-center justify-center gap-1 hover:bg-accent active:scale-95 transition-all duration-200 shadow-lg
+                 bottom-4 right-4 w-14 h-14 md:bottom-8 md:right-8 md:w-20 md:h-20"
           :class="[isPulsing ? 'animate-cart-pulse' : '']"
         >
-          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <span class="font-mono text-sm font-bold text-white">
+          <span class="font-mono text-xs md:text-sm font-bold text-white">
             {{ itemCount > 99 ? '99+' : itemCount }}
           </span>
         </button>
@@ -55,11 +56,11 @@
           class="fixed top-0 right-0 h-full w-full max-w-md bg-white border-l border-black z-[9999] flex flex-col"
         >
           <!-- Header -->
-          <div class="flex items-center justify-between px-6 py-5 border-b border-black">
-            <h2 class="font-display text-2xl font-bold text-black uppercase">{{ t.cart }}</h2>
+          <div class="flex items-center justify-between px-4 py-4 md:px-6 md:py-5 border-b border-black">
+            <h2 class="font-display text-xl md:text-2xl font-bold text-black uppercase">{{ t.cart }}</h2>
             <button
               @click="closeCart"
-              class="w-10 h-10 bg-black text-white flex items-center justify-center hover:bg-accent transition-colors"
+              class="w-10 h-10 bg-black text-white flex items-center justify-center hover:bg-accent transition-colors rounded-full md:rounded-none"
             >
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -86,7 +87,7 @@
               <div 
                 v-for="item in lineItems" 
                 :key="item.id"
-                class="p-6 relative"
+                class="p-4 md:p-6 relative"
                 :class="{ 'opacity-50': updatingItem === item.id }"
               >
                 <!-- Loading overlay -->
@@ -97,9 +98,9 @@
                   <div class="w-6 h-6 border-2 border-black border-t-accent animate-spin" />
                 </div>
                 
-                <div class="flex gap-4">
+                <div class="flex gap-3 md:gap-4">
                   <!-- Product Image -->
-                  <div class="w-20 h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
+                  <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-100 flex-shrink-0 overflow-hidden">
                     <img 
                       v-if="item.cover?.url" 
                       :src="item.cover.url" 
@@ -113,15 +114,15 @@
                   
                   <!-- Product Info -->
                   <div class="flex-1 min-w-0">
-                    <h3 class="font-sans font-semibold text-black truncate">{{ item.label }}</h3>
-                    <p class="font-mono text-lg font-bold text-accent mt-1">{{ formatPrice(item.price.totalPrice) }}</p>
+                    <h3 class="font-sans font-semibold text-sm md:text-base text-black truncate">{{ item.label }}</h3>
+                    <p class="font-mono text-base md:text-lg font-bold text-accent mt-1">{{ formatPrice(item.price.totalPrice) }}</p>
                     
                     <!-- Quantity Controls -->
-                    <div class="flex items-center gap-2 mt-3">
+                    <div class="flex items-center gap-2 mt-2 md:mt-3">
                       <button
                         @click="handleDecreaseQuantity(item)"
                         :disabled="updatingItem === item.id || isUpdating"
-                        class="w-8 h-8 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors disabled:opacity-50"
+                        class="w-8 h-8 border border-black flex items-center justify-center hover:bg-black hover:text-white active:bg-black active:text-white transition-colors disabled:opacity-50"
                       >
                         <span class="font-mono">−</span>
                       </button>
@@ -129,7 +130,7 @@
                       <button
                         @click="handleIncreaseQuantity(item)"
                         :disabled="updatingItem === item.id || isUpdating"
-                        class="w-8 h-8 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors disabled:opacity-50"
+                        class="w-8 h-8 border border-black flex items-center justify-center hover:bg-black hover:text-white active:bg-black active:text-white transition-colors disabled:opacity-50"
                       >
                         <span class="font-mono">+</span>
                       </button>
@@ -138,7 +139,7 @@
                       <button
                         @click="handleRemoveItem(item.id)"
                         :disabled="updatingItem === item.id || isUpdating"
-                        class="ml-auto w-8 h-8 border border-accent text-accent flex items-center justify-center hover:bg-accent hover:text-white transition-colors disabled:opacity-50"
+                        class="ml-auto w-8 h-8 border border-accent text-accent flex items-center justify-center hover:bg-accent hover:text-white active:bg-accent active:text-white transition-colors disabled:opacity-50"
                       >
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -154,31 +155,31 @@
           <!-- Error Message -->
           <div 
             v-if="errorMessage" 
-            class="mx-6 mb-4 p-3 bg-accent/10 border border-accent text-accent text-sm"
+            class="mx-4 md:mx-6 mb-4 p-3 bg-accent/10 border border-accent text-accent text-sm"
           >
             {{ errorMessage }}
             <button @click="errorMessage = null" class="ml-2 opacity-50 hover:opacity-100">×</button>
           </div>
           
           <!-- Footer -->
-          <div v-if="!isEmpty && !loading && !isUpdating" class="border-t border-black p-6 space-y-4">
+          <div v-if="!isEmpty && !loading && !isUpdating" class="border-t border-black p-4 md:p-6 space-y-3 md:space-y-4">
             <!-- Subtotal -->
-            <div class="flex justify-between font-sans text-black/60">
+            <div class="flex justify-between font-sans text-sm md:text-base text-black/60">
               <span>{{ t.subtotal }}</span>
               <span>{{ formatPrice(subtotal) }}</span>
             </div>
             
             <!-- Total -->
             <div class="flex justify-between items-center">
-              <span class="font-sans font-semibold text-black uppercase tracking-wider">{{ t.total }}</span>
-              <span class="font-mono text-2xl font-bold text-accent">{{ formatPrice(totalPrice) }}</span>
+              <span class="font-sans font-semibold text-black uppercase tracking-wider text-sm md:text-base">{{ t.total }}</span>
+              <span class="font-mono text-xl md:text-2xl font-bold text-accent">{{ formatPrice(totalPrice) }}</span>
             </div>
             
             <!-- Checkout Button -->
             <NuxtLink
               to="/checkout"
               @click="closeCart"
-              class="block w-full py-4 px-6 bg-black text-white font-sans font-semibold uppercase tracking-widest text-center hover:bg-accent transition-all"
+              class="block w-full py-3.5 md:py-4 px-6 bg-black text-white font-sans font-semibold uppercase tracking-widest text-center hover:bg-accent active:bg-accent transition-all"
             >
               {{ t.checkout }}
             </NuxtLink>
