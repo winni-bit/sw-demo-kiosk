@@ -1,89 +1,87 @@
 <template>
-  <div class="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
-    <div class="w-full max-w-md">
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <NuxtLink to="/" class="inline-block mb-6">
-          <h1 class="text-2xl font-bold text-white">Kiosk Shop</h1>
-        </NuxtLink>
-        <h2 class="text-xl font-semibold text-white mb-2">{{ t.title }}</h2>
-        <p class="text-neutral-400">{{ t.subtitle }}</p>
-      </div>
-      
-      <!-- Form Card -->
-      <div class="bg-neutral-900 rounded-2xl p-6 sm:p-8">
-        <!-- Success Message -->
-        <div 
-          v-if="success" 
-          class="p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 text-sm mb-6"
-        >
-          {{ t.successMessage }}
-        </div>
-        
-        <!-- Error Message -->
-        <div 
-          v-if="error" 
-          class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm mb-6"
-        >
-          {{ error }}
-        </div>
-        
-        <form @submit.prevent="handleSubmit" class="space-y-5">
-          <!-- Email -->
-          <div>
-            <label for="email" class="block text-sm font-medium text-neutral-300 mb-2">
-              {{ t.email }} *
-            </label>
-            <input
-              id="email"
-              v-model="email"
-              type="email"
-              required
-              autocomplete="email"
-              :placeholder="t.emailPlaceholder"
-              class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all"
-              :disabled="loading || success"
-            />
-          </div>
-          
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            :disabled="loading || success || !email"
-            class="w-full py-4 px-6 bg-white text-neutral-900 rounded-xl font-semibold text-lg hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-          >
-            <svg 
-              v-if="loading" 
-              class="w-5 h-5 animate-spin" 
-              fill="none" 
-              viewBox="0 0 24 24"
-            >
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            {{ loading ? t.sending : t.submit }}
-          </button>
-        </form>
-        
-        <!-- Back to Login -->
-        <p class="text-center text-neutral-400 text-sm mt-6">
-          <NuxtLink to="/account/login" class="text-white hover:underline">
-            {{ t.backToLogin }}
-          </NuxtLink>
-        </p>
-      </div>
-      
-      <!-- Back to Shop -->
-      <div class="text-center mt-6">
+  <div class="min-h-screen bg-white flex flex-col">
+    <!-- Header -->
+    <header class="border-b-2 border-black">
+      <div class="max-w-xl mx-auto px-6 py-5 flex items-center justify-between">
         <NuxtLink 
           to="/" 
-          class="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
+          class="inline-flex items-center gap-3 font-mono text-sm uppercase tracking-wider text-black/50 hover:text-black transition-colors py-2"
         >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
+          <span class="text-xl">←</span>
           {{ t.backToShop }}
         </NuxtLink>
+        <KioskLanguageSwitch />
+      </div>
+    </header>
+    
+    <div class="flex-1 flex flex-col items-center justify-center p-6">
+      <div class="w-full max-w-xl">
+        <!-- Logo -->
+        <div class="text-center mb-12">
+          <NuxtLink to="/" class="inline-block">
+            <h1 class="font-display text-5xl font-bold text-black uppercase">
+              KIOSK<span class="text-accent">.</span>
+            </h1>
+          </NuxtLink>
+        </div>
+        
+        <!-- Title -->
+        <div class="text-center mb-10">
+          <h2 class="font-display text-4xl font-bold text-black uppercase">{{ t.title }}</h2>
+          <p class="font-sans text-lg text-black/50 mt-3">{{ t.subtitle }}</p>
+        </div>
+        
+        <!-- Form Card -->
+        <div class="border-2 border-black p-8">
+          <!-- Success Message -->
+          <div 
+            v-if="success" 
+            class="p-5 bg-green-50 border-2 border-green-500 text-green-700 text-base mb-8"
+          >
+            {{ t.successMessage }}
+          </div>
+          
+          <!-- Error Message -->
+          <div 
+            v-if="error" 
+            class="p-5 bg-accent/10 border-2 border-accent text-accent text-base mb-8"
+          >
+            {{ error }}
+          </div>
+          
+          <form @submit.prevent="handleSubmit" class="space-y-8">
+            <!-- Email -->
+            <KioskInput
+              v-model="email"
+              type="email"
+              :label="t.email"
+              :placeholder="t.emailPlaceholder"
+              required
+              autocomplete="email"
+              inputmode="email"
+              size="xl"
+              :disabled="loading || success"
+            />
+            
+            <!-- Submit Button -->
+            <KioskButton
+              type="submit"
+              size="xl"
+              full-width
+              :loading="loading"
+              :disabled="success || !email"
+            >
+              {{ loading ? t.sending : t.submit }}
+            </KioskButton>
+          </form>
+          
+          <!-- Back to Login -->
+          <p class="text-center font-sans text-lg text-black/50 mt-8">
+            <NuxtLink to="/account/login" class="text-accent hover:underline font-semibold">
+              {{ t.backToLogin }}
+            </NuxtLink>
+          </p>
+        </div>
       </div>
     </div>
   </div>

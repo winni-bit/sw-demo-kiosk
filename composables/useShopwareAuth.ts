@@ -145,6 +145,22 @@ export function useShopwareAuth() {
     return customer.value?.addresses || []
   })
   
+  /**
+   * Get the customer's budget from customFields
+   * Returns 0 if not set
+   */
+  const customerBudget = computed(() => {
+    const budget = customer.value?.customFields?.custom_budget
+    if (typeof budget === 'number') {
+      return budget
+    }
+    if (typeof budget === 'string') {
+      const parsed = parseFloat(budget)
+      return isNaN(parsed) ? 0 : parsed
+    }
+    return 0
+  })
+  
   // ============================================
   // Auth Methods
   // ============================================
@@ -327,6 +343,7 @@ export function useShopwareAuth() {
         console.log('[Auth] Default billing address:', response.defaultBillingAddress?.street || 'none')
         console.log('[Auth] Default shipping address:', response.defaultShippingAddress?.street || 'none')
         console.log('[Auth] Total addresses:', response.addresses?.length || 0)
+        console.log('[Auth] Customer budget:', response.customFields?.custom_budget || 0)
         return response
       }
       
@@ -337,6 +354,79 @@ export function useShopwareAuth() {
       customer.value = null
       return null
     }
+  }
+  
+  /**
+   * Update customer's budget after an order
+   * Deducts the specified amount from the budget (minimum 0)
+   */
+  async function deductBudget(amount: number): Promise<boolean> {
+    if (!customer.value || amount <= 0) {
+      console.log('[Auth] No customer or invalid amount for budget deduction')
+      return false
+    }
+    
+    const currentBudget = customerBudget.value
+    const newBudget = Math.max(0, currentBudget - amount)
+    
+    console.log('[Auth] Deducting budget:', {
+      currentBudget,
+      deductAmount: amount,
+      newBudget,
+    })
+    
+    try {
+      // Update customer custom fields via the change-profile endpoint
+      await shopwareRequest('account/change-profile', {
+        body: {
+          salutationId: customer.value.salutationId,
+          firstName: customer.value.firstName,
+          lastName: customer.value.lastName,
+          customFields: {
+            custom_budget: newBudget,
+          },
+        },
+      })
+      
+      console.log('[Auth] Budget updated successfully to:', newBudget)
+      
+      // Refresh customer data to get updated budget
+      await fetchCustomer()
+      
+      return true
+    } catch (err: any) {
+      console.error('[Auth] Failed to update budget:', err)
+      
+      // Try alternative endpoint if change-profile doesn't work
+      try {
+        console.log('[Auth] Trying alternative endpoint for budget update...')
+        
+        await shopwareRequest('account/customer', {
+          method: 'PATCH',
+          body: {
+            customFields: {
+              custom_budget: newBudget,
+            },
+          },
+        })
+        
+        console.log('[Auth] Budget updated via alternative endpoint to:', newBudget)
+        await fetchCustomer()
+        return true
+      } catch (altErr: any) {
+        console.error('[Auth] Alternative budget update also failed:', altErr)
+        return false
+      }
+    }
+  }
+  
+  /**
+   * Calculate how much budget will be used for a given order total
+   * Returns the minimum of budget and order total
+   */
+  function calculateBudgetDeduction(orderTotal: number): number {
+    const budget = customerBudget.value
+    return Math.min(budget, orderTotal)
   }
   
   /**
@@ -613,6 +703,7 @@ export function useShopwareAuth() {
     billingAddress,
     shippingAddress,
     addresses,
+    customerBudget,
     
     // Methods
     login,
@@ -623,6 +714,8 @@ export function useShopwareAuth() {
     fetchOrder,
     initAuth,
     clearError,
+    deductBudget,
+    calculateBudgetDeduction,
     
     // Context token (for sharing with cart)
     getContextToken,

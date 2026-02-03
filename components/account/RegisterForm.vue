@@ -1,36 +1,36 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-8">
+  <form @submit.prevent="handleSubmit" class="space-y-10">
     <!-- Error Message -->
     <div 
       v-if="error" 
-      class="p-4 bg-accent/10 border border-accent text-accent text-sm"
+      class="p-5 bg-accent/10 border-2 border-accent text-accent text-base"
     >
       {{ error }}
     </div>
     
     <!-- Loading State for Form Data -->
-    <div v-if="isLoadingFormData" class="flex items-center justify-center py-8">
-      <div class="flex items-center gap-3 text-black/50">
-        <div class="w-6 h-6 border-2 border-black border-t-accent animate-spin" />
-        <span class="font-mono text-xs uppercase tracking-wider">{{ t.loadingFormData }}</span>
+    <div v-if="isLoadingFormData" class="flex items-center justify-center py-12">
+      <div class="flex items-center gap-4 text-black/50">
+        <div class="w-8 h-8 border-4 border-black border-t-accent animate-spin" />
+        <span class="font-mono text-sm uppercase tracking-wider">{{ t.loadingFormData }}</span>
       </div>
     </div>
     
     <template v-else>
       <!-- Personal Information Section -->
-      <div class="space-y-4">
-        <h3 class="font-display text-lg font-bold text-black uppercase border-b border-black pb-2">{{ t.personalInfo }}</h3>
+      <div class="space-y-6">
+        <h3 class="font-display text-xl font-bold text-black uppercase border-b-2 border-black pb-3">{{ t.personalInfo }}</h3>
         
         <!-- Salutation -->
         <div>
-          <label for="salutation" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
+          <label for="salutation" class="block font-mono text-sm uppercase tracking-wider text-black/60 mb-3">
             {{ t.salutation }} *
           </label>
           <select
             id="salutation"
             v-model="form.salutationId"
             required
-            class="w-full px-4 py-3 bg-white border border-black text-black focus:outline-none focus:border-accent transition-all"
+            class="w-full px-5 py-4 text-lg bg-white border-2 border-black text-black focus:outline-none focus:border-accent transition-all touch-manipulation min-h-[64px]"
             :disabled="loading"
           >
             <option value="" disabled>{{ t.selectSalutation }}</option>
@@ -46,191 +46,121 @@
         
         <!-- Name Row -->
         <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label for="firstName" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-              {{ t.firstName }} *
-            </label>
-            <input
-              id="firstName"
-              v-model="form.firstName"
-              type="text"
-              required
-              autocomplete="given-name"
-              :placeholder="t.firstNamePlaceholder"
-              class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
-              :disabled="loading"
-            />
-          </div>
+          <KioskInput
+            v-model="form.firstName"
+            :label="t.firstName + ' *'"
+            :placeholder="t.firstNamePlaceholder"
+            required
+            autocomplete="given-name"
+            size="lg"
+            :disabled="loading"
+          />
           
-          <div>
-            <label for="lastName" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-              {{ t.lastName }} *
-            </label>
-            <input
-              id="lastName"
-              v-model="form.lastName"
-              type="text"
-              required
-              autocomplete="family-name"
-              :placeholder="t.lastNamePlaceholder"
-              class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
-              :disabled="loading"
-            />
-          </div>
+          <KioskInput
+            v-model="form.lastName"
+            :label="t.lastName + ' *'"
+            :placeholder="t.lastNamePlaceholder"
+            required
+            autocomplete="family-name"
+            size="lg"
+            :disabled="loading"
+          />
         </div>
         
         <!-- Company (Optional) -->
-        <div>
-          <label for="company" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-            {{ t.company }}
-          </label>
-          <input
-            id="company"
-            v-model="form.company"
-            type="text"
-            autocomplete="organization"
-            :placeholder="t.companyPlaceholder"
-            class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
-            :disabled="loading"
-          />
-        </div>
+        <KioskInput
+          v-model="form.company"
+          :label="t.company"
+          :placeholder="t.companyPlaceholder"
+          autocomplete="organization"
+          size="lg"
+          :disabled="loading"
+        />
       </div>
       
       <!-- Account Section -->
-      <div class="space-y-4">
-        <h3 class="font-display text-lg font-bold text-black uppercase border-b border-black pb-2">{{ t.accountInfo }}</h3>
+      <div class="space-y-6">
+        <h3 class="font-display text-xl font-bold text-black uppercase border-b-2 border-black pb-3">{{ t.accountInfo }}</h3>
         
         <!-- Email -->
-        <div>
-          <label for="email" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-            {{ t.email }} *
-          </label>
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
-            autocomplete="email"
-            :placeholder="t.emailPlaceholder"
-            class="w-full px-4 py-3 bg-white border text-black placeholder-black/30 focus:outline-none transition-all"
-            :class="validationErrors.email ? 'border-accent' : 'border-black focus:border-accent'"
-            :disabled="loading"
-          />
-          <p v-if="validationErrors.email" class="mt-1 font-mono text-xs text-accent">
-            {{ validationErrors.email }}
-          </p>
-        </div>
+        <KioskInput
+          v-model="form.email"
+          type="email"
+          :label="t.email + ' *'"
+          :placeholder="t.emailPlaceholder"
+          required
+          autocomplete="email"
+          inputmode="email"
+          size="lg"
+          :error="validationErrors.email"
+          :disabled="loading"
+        />
         
         <!-- Password -->
         <div>
-          <label for="password" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-            {{ t.password }} *
-          </label>
-          <div class="relative">
-            <input
-              id="password"
-              v-model="form.password"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              autocomplete="new-password"
-              :placeholder="t.passwordPlaceholder"
-              class="w-full px-4 py-3 bg-white border text-black placeholder-black/30 focus:outline-none transition-all pr-12"
-              :class="validationErrors.password ? 'border-accent' : 'border-black focus:border-accent'"
-              :disabled="loading"
-            />
-            <button
-              type="button"
-              @click="showPassword = !showPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
-            >
-              <svg v-if="showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-              </svg>
-              <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
-          </div>
-          <p v-if="validationErrors.password" class="mt-1 font-mono text-xs text-accent">
-            {{ validationErrors.password }}
-          </p>
-          <p class="mt-1 font-mono text-xs text-black/40">{{ t.passwordHint }}</p>
+          <KioskInput
+            v-model="form.password"
+            type="password"
+            :label="t.password + ' *'"
+            :placeholder="t.passwordPlaceholder"
+            required
+            autocomplete="new-password"
+            size="lg"
+            :error="validationErrors.password"
+            :disabled="loading"
+          />
+          <p class="mt-2 font-mono text-sm text-black/40">{{ t.passwordHint }}</p>
         </div>
         
         <!-- Password Confirm -->
-        <div>
-          <label for="passwordConfirm" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-            {{ t.passwordConfirm }} *
-          </label>
-          <input
-            id="passwordConfirm"
-            v-model="form.passwordConfirm"
-            :type="showPassword ? 'text' : 'password'"
-            required
-            autocomplete="new-password"
-            :placeholder="t.passwordConfirmPlaceholder"
-            class="w-full px-4 py-3 bg-white border text-black placeholder-black/30 focus:outline-none transition-all"
-            :class="validationErrors.passwordConfirm ? 'border-accent' : 'border-black focus:border-accent'"
-            :disabled="loading"
-          />
-          <p v-if="validationErrors.passwordConfirm" class="mt-1 font-mono text-xs text-accent">
-            {{ validationErrors.passwordConfirm }}
-          </p>
-        </div>
+        <KioskInput
+          v-model="form.passwordConfirm"
+          type="password"
+          :label="t.passwordConfirm + ' *'"
+          :placeholder="t.passwordConfirmPlaceholder"
+          required
+          autocomplete="new-password"
+          size="lg"
+          :error="validationErrors.passwordConfirm"
+          :disabled="loading"
+        />
       </div>
       
       <!-- Address Section -->
-      <div class="space-y-4">
-        <h3 class="font-display text-lg font-bold text-black uppercase border-b border-black pb-2">{{ t.addressInfo }}</h3>
+      <div class="space-y-6">
+        <h3 class="font-display text-xl font-bold text-black uppercase border-b-2 border-black pb-3">{{ t.addressInfo }}</h3>
         
         <!-- Street -->
-        <div>
-          <label for="street" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-            {{ t.street }} *
-          </label>
-          <input
-            id="street"
-            v-model="form.street"
-            type="text"
-            required
-            autocomplete="street-address"
-            :placeholder="t.streetPlaceholder"
-            class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
-            :disabled="loading"
-          />
-        </div>
+        <KioskInput
+          v-model="form.street"
+          :label="t.street + ' *'"
+          :placeholder="t.streetPlaceholder"
+          required
+          autocomplete="street-address"
+          size="lg"
+          :disabled="loading"
+        />
         
         <!-- ZIP & City Row -->
         <div class="grid grid-cols-3 gap-4">
-          <div>
-            <label for="zipcode" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-              {{ t.zipcode }} *
-            </label>
-            <input
-              id="zipcode"
-              v-model="form.zipcode"
-              type="text"
-              required
-              autocomplete="postal-code"
-              :placeholder="t.zipcodePlaceholder"
-              class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
-              :disabled="loading"
-            />
-          </div>
+          <KioskInput
+            v-model="form.zipcode"
+            :label="t.zipcode + ' *'"
+            :placeholder="t.zipcodePlaceholder"
+            required
+            autocomplete="postal-code"
+            size="lg"
+            :disabled="loading"
+          />
           
           <div class="col-span-2">
-            <label for="city" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-              {{ t.city }} *
-            </label>
-            <input
-              id="city"
+            <KioskInput
               v-model="form.city"
-              type="text"
+              :label="t.city + ' *'"
+              :placeholder="t.cityPlaceholder"
               required
               autocomplete="address-level2"
-              :placeholder="t.cityPlaceholder"
-              class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
+              size="lg"
               :disabled="loading"
             />
           </div>
@@ -238,14 +168,14 @@
         
         <!-- Country -->
         <div>
-          <label for="country" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
+          <label for="country" class="block font-mono text-sm uppercase tracking-wider text-black/60 mb-3">
             {{ t.country }} *
           </label>
           <select
             id="country"
             v-model="form.countryId"
             required
-            class="w-full px-4 py-3 bg-white border border-black text-black focus:outline-none focus:border-accent transition-all"
+            class="w-full px-5 py-4 text-lg bg-white border-2 border-black text-black focus:outline-none focus:border-accent transition-all touch-manipulation min-h-[64px]"
             :disabled="loading"
           >
             <option value="" disabled>{{ t.selectCountry }}</option>
@@ -261,14 +191,14 @@
         
         <!-- Country State (if available) -->
         <div v-if="selectedCountryStates.length > 0">
-          <label for="countryState" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
+          <label for="countryState" class="block font-mono text-sm uppercase tracking-wider text-black/60 mb-3">
             {{ t.state }} *
           </label>
           <select
             id="countryState"
             v-model="form.countryStateId"
             required
-            class="w-full px-4 py-3 bg-white border border-black text-black focus:outline-none focus:border-accent transition-all"
+            class="w-full px-5 py-4 text-lg bg-white border-2 border-black text-black focus:outline-none focus:border-accent transition-all touch-manipulation min-h-[64px]"
             :disabled="loading"
           >
             <option value="" disabled>{{ t.selectState }}</option>
@@ -283,32 +213,28 @@
         </div>
         
         <!-- Phone (Optional) -->
-        <div>
-          <label for="phone" class="block font-mono text-xs uppercase tracking-wider text-black/60 mb-2">
-            {{ t.phone }}
-          </label>
-          <input
-            id="phone"
-            v-model="form.phoneNumber"
-            type="tel"
-            autocomplete="tel"
-            :placeholder="t.phonePlaceholder"
-            class="w-full px-4 py-3 bg-white border border-black text-black placeholder-black/30 focus:outline-none focus:border-accent transition-all"
-            :disabled="loading"
-          />
-        </div>
+        <KioskInput
+          v-model="form.phoneNumber"
+          type="tel"
+          :label="t.phone"
+          :placeholder="t.phonePlaceholder"
+          autocomplete="tel"
+          inputmode="tel"
+          size="lg"
+          :disabled="loading"
+        />
       </div>
       
       <!-- Terms & Conditions -->
-      <div class="space-y-3">
-        <label class="flex items-start gap-3 cursor-pointer">
+      <div class="space-y-4">
+        <label class="flex items-start gap-4 cursor-pointer touch-manipulation py-2">
           <input
             v-model="form.acceptTerms"
             type="checkbox"
             required
-            class="w-5 h-5 mt-0.5 border-black bg-white text-black focus:ring-0 focus:ring-offset-0"
+            class="w-7 h-7 mt-0.5 border-2 border-black bg-white text-black focus:ring-0 focus:ring-offset-0 flex-shrink-0"
           />
-          <span class="font-sans text-sm text-black/70">
+          <span class="font-sans text-base text-black/70">
             {{ t.acceptTerms }}
             <NuxtLink to="/terms" class="text-accent hover:underline">{{ t.terms }}</NuxtLink>
             {{ t.and }}
@@ -316,33 +242,26 @@
             {{ t.acceptTermsEnd }} *
           </span>
         </label>
-        <p v-if="validationErrors.acceptTerms" class="font-mono text-xs text-accent">
+        <p v-if="validationErrors.acceptTerms" class="font-mono text-sm text-accent">
           {{ validationErrors.acceptTerms }}
         </p>
       </div>
       
       <!-- Submit Button -->
-      <button
+      <KioskButton
         type="submit"
-        :disabled="loading || !isFormValid"
-        class="w-full py-4 px-6 bg-black text-white font-sans font-semibold uppercase tracking-widest hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+        size="xl"
+        full-width
+        :loading="loading"
+        :disabled="!isFormValid"
       >
-        <svg 
-          v-if="loading" 
-          class="w-5 h-5 animate-spin" 
-          fill="none" 
-          viewBox="0 0 24 24"
-        >
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-        </svg>
         {{ loading ? t.registering : t.register }}
-      </button>
+      </KioskButton>
       
       <!-- Login Link -->
-      <p class="text-center font-sans text-black/50 text-sm">
+      <p class="text-center font-sans text-lg text-black/50">
         {{ t.hasAccount }}
-        <NuxtLink to="/account/login" class="text-accent hover:underline font-semibold">
+        <NuxtLink to="/account/login" class="text-accent hover:underline font-semibold ml-1">
           {{ t.loginNow }}
         </NuxtLink>
       </p>
@@ -381,7 +300,6 @@ const form = reactive<RegistrationFormData>({
   acceptTerms: false,
 })
 
-const showPassword = ref(false)
 const validationErrors = reactive<Record<string, string>>({})
 
 const salutationLabels: Record<string, Record<string, string>> = {
